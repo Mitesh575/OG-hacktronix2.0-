@@ -1,0 +1,797 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@font-face {
+  font-family: 'Star Jedi';
+  src: url('./assets/fonts/starjedi/Starjedi.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #6366f1;
+  --color-secondary: #8b5cf6;
+  --color-accent: #06b6d4;
+  --color-bg: #0a0a0f;
+  --color-surface: #1a1a1a;
+  --glow-primary: rgba(99, 102, 241, 0.6);
+  --glow-secondary: rgba(139, 92, 246, 0.6);
+  --glow-accent: rgba(6, 182, 212, 0.6);
+  /* Neon palette */
+  --neon-cyan: #00f5ff;
+  --neon-pink: #ff00aa;
+  --neon-green: #00ff88;
+  --neon-yellow: #ffe600;
+  --neon-red: #ff2d55;
+  /* Star Wars — neutral Imperial bridge */
+  --sw-steel: #2a2a32;
+  --sw-graphite: #1e1e26;
+  --sw-panel: rgba(18, 18, 24, 0.92);
+  --sw-panel-border: rgba(255, 255, 255, 0.06);
+  --sw-holo: rgba(0, 245, 255, 0.12);
+  --sw-holo-bright: rgba(0, 245, 255, 0.35);
+  --sw-amber: #ff9f1c;
+  --sw-amber-dim: rgba(255, 159, 28, 0.25);
+  /* Star Wars — Vader (Software) */
+  --sw-red: #cc1122;
+  --sw-red-glow: rgba(204, 17, 34, 0.4);
+  --sw-red-dim: rgba(204, 17, 34, 0.15);
+  --sw-sith-dark: #141418;
+  /* Star Wars — Stormtrooper (Hardware) */
+  --sw-armor: #e8e8ec;
+  --sw-armor-dim: rgba(232, 232, 236, 0.08);
+  --sw-tactical: #3a3a44;
+  --sw-cyan-tactical: rgba(0, 245, 255, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--color-bg);
+  color: #e5e5e5;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ---- Form Controls Dark Theme ---- */
+select {
+  color-scheme: dark;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+option {
+  background-color: #1a1a20;
+  color: #e5e5e5;
+  padding: 8px 12px;
+}
+
+option:checked {
+  background: linear-gradient(0deg, rgba(0, 245, 255, 0.2) 0%, rgba(0, 245, 255, 0.1) 100%);
+  color: #fff;
+}
+
+option:hover {
+  background-color: rgba(0, 245, 255, 0.08);
+}
+
+input, textarea, select {
+  color-scheme: dark;
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--neon-cyan), var(--color-primary));
+}
+
+/* ---- Glass Panel ---- */
+.glass {
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* ---- Gradient Border Card ---- */
+.gradient-border {
+  position: relative;
+  background: var(--color-surface);
+  border-radius: 16px;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ---- Spotlight Card Hover ---- */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.15), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
+.spotlight-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+}
+
+/* ---- Section Badge ---- */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--neon-cyan);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 0 12px rgba(0, 245, 255, 0.1), inset 0 0 8px rgba(0, 245, 255, 0.05);
+}
+
+/* ---- Star Wars Command Panel ---- */
+.sw-panel {
+  position: relative;
+  background: var(--sw-panel);
+  border: 1px solid var(--sw-panel-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sw-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sw-holo-bright), transparent);
+  opacity: 0.6;
+}
+.sw-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--neon-cyan), transparent 40%);
+  opacity: 0.3;
+}
+
+/* ---- Star Wars Imperial Divider ---- */
+.sw-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sw-holo-bright), transparent);
+  opacity: 0.4;
+}
+
+/* ---- Star Wars Holo Label ---- */
+.sw-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--neon-cyan);
+  opacity: 0.7;
+}
+
+/* ---- Star Wars Warning Label ---- */
+.sw-label-warning {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sw-amber);
+  opacity: 0.8;
+}
+
+/* ---- Star Wars Status Dot ---- */
+.sw-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--neon-cyan);
+  box-shadow: 0 0 6px var(--neon-cyan);
+  animation: pulse 2s ease-in-out infinite;
+}
+.sw-status-dot.warning {
+  background: var(--sw-amber);
+  box-shadow: 0 0 6px var(--sw-amber);
+}
+.sw-status-dot.red {
+  background: var(--sw-red);
+  box-shadow: 0 0 6px var(--sw-red);
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ---- Star Wars Command Button (Primary) ---- */
+.btn-sw-primary {
+  position: relative;
+  background: linear-gradient(135deg, var(--sw-graphite), var(--sw-steel));
+  color: white;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.06em;
+  padding: 14px 32px;
+  border-radius: 4px;
+  border: 1px solid var(--sw-holo-bright);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  text-transform: uppercase;
+}
+.btn-sw-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--color-primary));
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.btn-sw-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.3), 0 8px 24px rgba(0, 0, 0, 0.5);
+  border-color: var(--neon-cyan);
+}
+.btn-sw-primary:hover::before {
+  opacity: 0.15;
+}
+.btn-sw-primary:active {
+  transform: translateY(0);
+}
+.btn-sw-primary span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Star Wars Holo Button (Secondary) ---- */
+.btn-sw-secondary {
+  position: relative;
+  background: transparent;
+  border: 1px solid var(--sw-panel-border);
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+  padding: 14px 32px;
+  border-radius: 4px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+}
+.btn-sw-secondary:hover {
+  border-color: var(--sw-holo-bright);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 12px rgba(0, 245, 255, 0.1), inset 0 0 8px rgba(0, 245, 255, 0.03);
+  background: var(--sw-holo);
+}
+
+/* ---- Vader Button (Software Primary) ---- */
+.btn-vader {
+  position: relative;
+  background: linear-gradient(135deg, var(--sw-sith-dark), #1a1018);
+  color: white;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.06em;
+  padding: 14px 32px;
+  border-radius: 4px;
+  border: 1px solid var(--sw-red-glow);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  text-transform: uppercase;
+}
+.btn-vader::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--sw-red), #8b0000);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.btn-vader:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px var(--sw-red-glow), 0 8px 24px rgba(0, 0, 0, 0.5);
+  border-color: var(--sw-red);
+}
+.btn-vader:hover::before {
+  opacity: 0.2;
+}
+.btn-vader:active {
+  transform: translateY(0);
+}
+.btn-vader span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Stormtrooper Button (Hardware Primary) ---- */
+.btn-stormtrooper {
+  position: relative;
+  background: linear-gradient(135deg, var(--sw-tactical), var(--sw-steel));
+  color: white;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.06em;
+  padding: 14px 32px;
+  border-radius: 4px;
+  border: 1px solid var(--sw-cyan-tactical);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  text-transform: uppercase;
+}
+.btn-stormtrooper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--neon-cyan), #0088aa);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.btn-stormtrooper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.3), 0 8px 24px rgba(0, 0, 0, 0.5);
+  border-color: var(--neon-cyan);
+}
+.btn-stormtrooper:hover::before {
+  opacity: 0.15;
+}
+.btn-stormtrooper:active {
+  transform: translateY(0);
+}
+.btn-stormtrooper span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Vader Panel ---- */
+.sw-panel-vader {
+  position: relative;
+  background: var(--sw-sith-dark);
+  border: 1px solid var(--sw-red-dim);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sw-panel-vader::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sw-red-glow), transparent);
+  opacity: 0.6;
+}
+.sw-panel-vader::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--sw-red), transparent 40%);
+  opacity: 0.4;
+}
+
+/* ---- Stormtrooper Panel ---- */
+.sw-panel-stormtrooper {
+  position: relative;
+  background: var(--sw-panel);
+  border: 1px solid var(--sw-armor-dim);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sw-panel-stormtrooper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sw-cyan-tactical), transparent);
+  opacity: 0.6;
+}
+.sw-panel-stormtrooper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(232, 232, 236, 0.5), transparent 40%);
+  opacity: 0.3;
+}
+
+/* ---- Muted Text ---- */
+.muted {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.muted-2 {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ---- Accent Glow ---- */
+.accent-glow {
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.3), 0 0 60px rgba(139, 92, 246, 0.15);
+}
+
+/* ---- Button Primary ---- */
+.btn-primary {
+  position: relative;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+  padding: 14px 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--color-primary));
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.5), 0 0 48px rgba(0, 245, 255, 0.2), 0 12px 32px rgba(0, 0, 0, 0.4);
+  border-color: var(--neon-cyan);
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Button Secondary ---- */
+.btn-secondary {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+  padding: 14px 32px;
+  border-radius: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 16px rgba(0, 245, 255, 0.15), inset 0 0 12px rgba(0, 245, 255, 0.05);
+}
+
+/* ---- Heading Gradient ---- */
+.heading-gradient {
+  background: linear-gradient(90deg, var(--neon-cyan), var(--color-primary) 30%, var(--color-secondary) 60%, var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ---- Animated Background Pattern ---- */
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ---- Scanline Overlay ---- */
+.scanlines {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  animation: scanline-scroll 8s linear infinite;
+}
+
+@keyframes scanline-scroll {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100px; }
+}
+
+/* ---- Noise Texture ---- */
+.noise-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ---- Glitch Text ---- */
+@keyframes glitch-1 {
+  0%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+  20% { clip-path: inset(20% 0 60% 0); transform: translate(-3px, 1px); }
+  40% { clip-path: inset(50% 0 30% 0); transform: translate(3px, -1px); }
+  60% { clip-path: inset(70% 0 10% 0); transform: translate(-2px, 2px); }
+  80% { clip-path: inset(10% 0 80% 0); transform: translate(2px, -1px); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+  20% { clip-path: inset(60% 0 20% 0); transform: translate(3px, -1px); }
+  40% { clip-path: inset(30% 0 50% 0); transform: translate(-3px, 1px); }
+  60% { clip-path: inset(10% 0 70% 0); transform: translate(2px, -2px); }
+  80% { clip-path: inset(80% 0 10% 0); transform: translate(-2px, 1px); }
+}
+
+.glitch-text {
+  position: relative;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glitch-text::before {
+  color: var(--neon-cyan);
+  animation: glitch-1 3s infinite linear;
+  left: 0;
+}
+
+.glitch-text::after {
+  color: var(--neon-pink);
+  animation: glitch-2 3s infinite linear;
+  left: 0;
+}
+
+/* ---- Neon Text Glow ---- */
+.text-glow-cyan {
+  text-shadow: 0 0 8px var(--neon-cyan), 0 0 20px rgba(0, 245, 255, 0.4);
+}
+
+.text-glow-primary {
+  text-shadow: 0 0 8px var(--glow-primary), 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
+.text-glow-pink {
+  text-shadow: 0 0 8px var(--neon-pink), 0 0 20px rgba(255, 0, 170, 0.4);
+}
+
+/* ---- Border Glow ---- */
+.border-glow-cyan {
+  box-shadow: 0 0 0 1px rgba(0, 245, 255, 0.4), 0 0 16px rgba(0, 245, 255, 0.15);
+}
+
+.border-glow-primary {
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4), 0 0 16px rgba(99, 102, 241, 0.15);
+}
+
+/* ---- Floating Animation ---- */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ---- Pulse Glow ---- */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.5), 0 0 60px rgba(139, 92, 246, 0.3), 0 0 80px rgba(0, 245, 255, 0.15); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* ---- Neon Pulse Ring ---- */
+@keyframes neon-pulse-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.animate-neon-pulse-ring {
+  animation: neon-pulse-ring 2s ease-out infinite;
+}
+
+/* ---- Typing Cursor ---- */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--neon-cyan);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+  box-shadow: 0 0 6px var(--neon-cyan);
+}
+
+/* ---- CRT Flicker ---- */
+@keyframes crt-flicker {
+  0% { opacity: 0.97; }
+  5% { opacity: 0.95; }
+  10% { opacity: 0.98; }
+  15% { opacity: 0.96; }
+  20% { opacity: 0.99; }
+  25% { opacity: 0.94; }
+  30% { opacity: 0.98; }
+  35% { opacity: 0.97; }
+  40% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+.crt-flicker {
+  animation: crt-flicker 4s linear infinite;
+}
+
+/* ---- Terminal Typing ---- */
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typewriter 1.5s steps(20) forwards;
+}
+
+/* ---- Neon Border Animation ---- */
+@keyframes border-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-border-flow {
+  background-size: 200% 200%;
+  animation: border-flow 3s ease infinite;
+}
+
+/* ---- Fade Up ---- */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ---- Stagger Children ---- */
+.stagger-children > * {
+  opacity: 0;
+  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* ---- Number Counter ---- */
+.counter-value {
+  font-variant-numeric: tabular-nums;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ---- Monospace Badge ---- */
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ---- Reduced Motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .glitch-text::before,
+  .glitch-text::after {
+    animation: none;
+  }
+
+  .scanlines,
+  .noise-overlay {
+    display: none;
+  }
+
+  .animate-float,
+  .animate-pulse-glow,
+  .animate-neon-pulse-ring {
+    animation: none;
+  }
+}

@@ -1,0 +1,281 @@
+/* ============================================================
+   REALISTIC LIGHTSABER CUSTOM CURSOR
+   ============================================================ */
+
+/* ---- GLOBAL CURSOR SUPPRESSION ---- */
+.lightsaber-cursor-active,
+.lightsaber-cursor-active * {
+  cursor: none !important;
+}
+
+.lightsaber-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* ---- SABER CONTAINER ---- */
+.ls-saber-group {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* ---- BLADE OUTER GLOW — centered on origin ---- */
+.ls-blade-glow {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 8px;
+  height: 52px;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 245, 255, 0.3),
+    rgba(99, 102, 241, 0.12) 55%,
+    transparent
+  );
+  filter: blur(5px);
+  border-radius: 50%;
+  opacity: 0.6;
+  will-change: opacity, transform;
+}
+
+/* ---- BLADE BODY — center at origin (mouse point) ---- */
+.ls-blade {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 4px;
+  height: 46px;
+  transform: translate(-50%, -50%) scaleY(1);
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+/* ---- WHITE-HOT CORE ---- */
+.ls-blade-core {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    #ffffff 0%,
+    #e0faff 12%,
+    var(--neon-cyan) 35%,
+    rgba(0, 245, 255, 0.55) 70%,
+    transparent 100%
+  );
+  border-radius: 2px;
+  box-shadow:
+    0 0 8px rgba(0, 245, 255, 0.8),
+    0 0 16px rgba(0, 245, 255, 0.4),
+    0 0 32px rgba(99, 102, 241, 0.25),
+    0 0 48px rgba(0, 245, 255, 0.1);
+  animation: blade-flicker 0.15s steps(2) infinite;
+}
+
+@keyframes blade-flicker {
+  0% { opacity: 1; }
+  50% { opacity: 0.92; }
+  100% { opacity: 0.97; }
+}
+
+/* ---- HILT — below blade ---- */
+.ls-hilt {
+  position: absolute;
+  left: 50%;
+  top: 23px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ls-hilt-body {
+  position: relative;
+  width: 8px;
+  height: 20px;
+  background: linear-gradient(
+    90deg,
+    #1a1a24 0%,
+    #2a2a3a 25%,
+    #3a3a4a 50%,
+    #2a2a3a 75%,
+    #1a1a24 100%
+  );
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* Grip bands */
+.ls-hilt-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 245, 255, 0.25),
+    transparent
+  );
+  border-radius: 1px;
+}
+
+.ls-band-1 { top: 3px; }
+.ls-band-2 { top: 9px; }
+.ls-band-3 { top: 15px; }
+
+/* Emitter */
+.ls-hilt-emitter {
+  position: relative;
+  width: 10px;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    #1a1a24,
+    #3a3a4a 50%,
+    #1a1a24
+  );
+  border-radius: 2px 2px 0 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+    0 -2px 6px rgba(0, 245, 255, 0.15);
+}
+
+.ls-emitter-glow {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 245, 255, 0.4),
+    transparent 70%
+  );
+  animation: emitter-pulse 2s ease-in-out infinite;
+}
+
+@keyframes emitter-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Pommel */
+.ls-hilt-pommel {
+  width: 10px;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    #1a1a24,
+    #2a2a3a 50%,
+    #1a1a24
+  );
+  border-radius: 0 0 2px 2px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   VARIANT: WHITE LIGHTSABER (Stormtrooper / Software)
+   ============================================================ */
+.ls-variant-white .ls-blade-glow {
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.35),
+    rgba(200, 200, 220, 0.15) 55%,
+    transparent
+  );
+}
+.ls-variant-white .ls-blade-core {
+  background: linear-gradient(
+    to top,
+    #ffffff 0%,
+    #f0f0f5 20%,
+    rgba(220, 220, 240, 0.8) 45%,
+    rgba(200, 200, 220, 0.4) 75%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 8px rgba(255, 255, 255, 0.8),
+    0 0 16px rgba(255, 255, 255, 0.4),
+    0 0 32px rgba(200, 200, 220, 0.2),
+    0 0 48px rgba(255, 255, 255, 0.08);
+}
+.ls-variant-white .ls-hilt-band {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+}
+.ls-variant-white .ls-emitter-glow {
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.35),
+    transparent 70%
+  );
+}
+.ls-variant-white .ls-hilt-emitter {
+  box-shadow:
+    inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+    0 -2px 6px rgba(255, 255, 255, 0.12);
+}
+
+/* ============================================================
+   VARIANT: RED LIGHTSABER (Vader / Hardware)
+   ============================================================ */
+.ls-variant-red .ls-blade-glow {
+  background: linear-gradient(
+    to top,
+    rgba(204, 17, 34, 0.4),
+    rgba(139, 0, 0, 0.15) 55%,
+    transparent
+  );
+}
+.ls-variant-red .ls-blade-core {
+  background: linear-gradient(
+    to top,
+    #ffffff 0%,
+    #ff6666 15%,
+    var(--sw-red) 40%,
+    rgba(180, 0, 20, 0.5) 75%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 8px rgba(204, 17, 34, 0.9),
+    0 0 16px rgba(204, 17, 34, 0.5),
+    0 0 32px rgba(139, 0, 0, 0.3),
+    0 0 48px rgba(204, 17, 34, 0.12);
+}
+.ls-variant-red .ls-hilt-band {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(204, 17, 34, 0.3),
+    transparent
+  );
+}
+.ls-variant-red .ls-emitter-glow {
+  background: radial-gradient(
+    circle,
+    rgba(204, 17, 34, 0.45),
+    transparent 70%
+  );
+}
+.ls-variant-red .ls-hilt-emitter {
+  box-shadow:
+    inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+    0 -2px 6px rgba(204, 17, 34, 0.2);
+}

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Read(//c/Users/dilli/OneDrive/Documents/DemoSite/HACKTRONIX 2.0/src/components/ui/**)",
+      "Read(//c/Users/dilli/OneDrive/Documents/DemoSite/HACKTRONIX 2.0/src/components/**)",
+      "WebFetch(domain:hacktronix.netlify.app)"
+    ]
+  }
+}
