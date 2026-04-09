@@ -36,7 +36,7 @@ export default function AdminDashboard() {
       "College": r.college,
       "Team Name": r.teamName,
       "Track": r.track,
-      "Team Size": r.teamSize,
+      "Members": r.members?.map((m) => m.name).join(", ") || "",
       "Status": r.status,
       "Date": r.createdAt?.toLocaleDateString() || "",
     }));

@@ -68,8 +68,8 @@ export default function DetailDrawer({ participant, onClose }) {
                 <p className="text-white">{participant.phone}</p>
               </div>
               <div className="bg-bg rounded-lg p-4">
-                <label className="text-gray-400 text-sm">Team Size</label>
-                <p className="text-white">{participant.teamSize} members</p>
+                <label className="text-gray-400 text-sm">Track</label>
+                <p className="text-white">{participant.track}</p>
               </div>
             </div>
 
@@ -82,6 +82,24 @@ export default function DetailDrawer({ participant, onClose }) {
               <label className="text-gray-400 text-sm">College</label>
               <p className="text-white">{participant.college}</p>
             </div>
+
+            {participant.members && participant.members.length > 0 && (
+              <div className="bg-bg rounded-lg p-4">
+                <label className="text-gray-400 text-sm mb-3 block">Team Members</label>
+                <div className="space-y-3">
+                  {participant.members.map((member, idx) => (
+                    <div key={idx} className="border-t border-white/5 pt-3 first:border-t-0 first:pt-0">
+                      <p className="text-white font-medium text-sm">Member {idx + 1}</p>
+                      <div className="mt-1 space-y-1">
+                        <p className="text-gray-300 text-sm">{member.name}</p>
+                        <p className="text-gray-400 text-xs">{member.email}</p>
+                        <p className="text-gray-400 text-xs">{member.phone}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="bg-bg rounded-lg p-4">
               <label className="text-gray-400 text-sm">Registration Date</label>

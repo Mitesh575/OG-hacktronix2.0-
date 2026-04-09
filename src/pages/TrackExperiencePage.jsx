@@ -8,6 +8,8 @@ import RegistrationModal from "../components/RegistrationModal";
 import GlassCard from "../components/ui/GlassCard";
 import AccentCard from "../components/ui/AccentCard";
 import { problemStatements } from "../data/problemStatements";
+import softwareRightImg from "../images/software-right.png";
+import hardwareLeftImg from "../images/hardware-left.png";
 
 const trackConfig = {
   Software: {
@@ -55,7 +57,7 @@ const trackTheme = {
     badgeBg: "bg-[var(--sw-cyan-tactical)]",
     buttonClass: "btn-stormtrooper",
     dividerBg: "linear-gradient(90deg, transparent, var(--sw-cyan-tactical), transparent)",
-    cardBg: "bg-[rgba(14,14,20,0.92)]",
+    cardBg: "bg-[rgba(14,14,20,0.45)] backdrop-blur-md",
     cardBorder: "border-[var(--sw-armor-dim)]",
     cardHoverBorder: "hover:border-[rgba(0,245,255,0.2)]",
     tagBg: "bg-[var(--sw-armor-dim)]",
@@ -71,18 +73,18 @@ const trackTheme = {
     accentClass: "border-[var(--sw-red-dim)]",
     accentGlow: "shadow-[0_0_20px_rgba(204,17,34,0.15)]",
     headingAccent: "text-[var(--sw-red)]",
-    badgeBg: "bg-[var(--sw-red-dim)]",
+    badgeBg: "!bg-red-600 !text-white !border-none",
     buttonClass: "btn-vader",
     dividerBg: "linear-gradient(90deg, transparent, var(--sw-red-glow), transparent)",
-    cardBg: "bg-[var(--sw-sith-dark)]",
-    cardBorder: "border-[var(--sw-red-dim)]",
+    cardBg: "bg-[rgba(255,255,255,0.45)] backdrop-blur-md",
+    cardBorder: "border-black/10",
     cardHoverBorder: "hover:border-[var(--sw-red)]",
     tagBg: "bg-[var(--sw-red-dim)]",
     tagBorder: "border-[var(--sw-red-dim)]",
     tagText: "text-[var(--sw-red)]",
-    iconBg: "bg-gradient-to-br from-red-600 to-red-800",
-    accentStrip: "from-red-600 to-red-400",
-    gradient: "from-red-500 to-rose-400",
+    iconBg: "bg-black text-white",
+    accentStrip: "from-gray-900 to-black",
+    gradient: "from-gray-900 to-black",
     cursorVariant: "red",
   },
 };
@@ -92,49 +94,73 @@ export default function TrackExperiencePage({ track }) {
   const config = trackConfig[track];
   const theme = trackTheme[track];
   const Icon = config.icon;
+  const isSoftware = track === "Software";
   const statements = useMemo(() => problemStatements[track] || [], [track]);
 
   return (
-    <div className="min-h-screen">
+    <div className={`min-h-screen relative ${!isSoftware ? "text-black" : "text-white"}`}>
       <TargetCursor variant={theme.cursorVariant} />
-      <div className="fixed inset-0 -z-10 opacity-95" style={{ width: "100vw", height: "100vh" }}>
-        <Galaxy mouseInteraction={false} density={0.65} glowIntensity={0.2} saturation={0.08} />
+
+      {/* Background Layer */}
+      {isSoftware ? (
+        <div
+          className="fixed inset-0 -z-30 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${softwareRightImg})` }}
+        />
+      ) : (
+        <div
+          className="fixed inset-0 -z-30 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${hardwareLeftImg})` }}
+        />
+      )}
+
+      {/* Particles on top of BG */}
+      <div className="fixed inset-0 -z-10" style={{ width: "100vw", height: "100vh" }}>
+        <Galaxy mouseInteraction={false} density={isSoftware ? 1.5 : 0.65} glowIntensity={0.1} saturation={0} />
       </div>
 
-      <header className="sticky top-0 z-40 border-b border-white/6 bg-[rgba(10,10,14,0.88)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link to="/" className="cursor-target inline-flex items-center gap-3 text-white">
-            <span className="flex h-10 w-10 items-center justify-center rounded-sm bg-gradient-to-br from-[var(--sw-graphite)] to-[var(--sw-steel)] font-bold text-xs font-mono tracking-widest">HX</span>
-            <span className="text-lg font-semibold font-mono tracking-wider" style={{ fontFamily: "'Star Jedi', sans-serif" }}>HACKTRONIX</span>
+      <header className={`sticky top-0 z-40 transition-all duration-300 ${!isSoftware
+          ? "bg-white/95 border-b border-black text-black"
+          : "border-b border-white/6 bg-[rgba(10,10,14,0.88)] backdrop-blur-xl text-white"
+        }`}>
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-x-8 px-4 py-4 sm:px-6 lg:px-8">
+          <Link to="/" className={`cursor-target inline-flex items-center gap-3 ${!isSoftware ? "text-black" : "text-white"}`}>
+            <span className={`flex h-10 w-10 items-center justify-center rounded-sm font-bold text-xs font-mono tracking-widest ${!isSoftware ? "bg-black text-white" : "bg-gradient-to-br from-[var(--sw-graphite)] to-[var(--sw-steel)] text-white"
+              }`}>HX</span>
+            <span className="text-lg font-semibold font-mono tracking-wider uppercase">HACKTRONIX</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link to="/" className="cursor-target inline-flex items-center gap-2 rounded-sm border border-white/8 bg-white/[0.03] px-4 py-2 text-xs text-gray-300 transition hover:text-white font-mono tracking-wider uppercase">
+            <Link to="/" className={`cursor-target inline-flex items-center gap-2 rounded-sm border px-4 py-2 text-xs transition font-mono tracking-wider uppercase ${!isSoftware
+                ? "border-black/20 bg-black/5 text-black hover:bg-black/10"
+                : "border-white/8 bg-white/[0.03] text-gray-300 hover:text-white"
+              }`}>
               <ArrowLeft className="h-4 w-4" />
               Back home
             </Link>
-            <button onClick={() => setModalOpen(true)} className={`${theme.buttonClass} cursor-target text-sm`}>
-              <span>Register for {track}</span>
-            </button>
           </div>
         </div>
       </header>
 
       <main>
         <section className="relative overflow-hidden px-4 pb-20 pt-24 sm:px-6 lg:px-8 lg:pb-28 lg:pt-32">
-          <div className="mx-auto grid max-w-7xl items-end gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-            <div>
+          <div className="mx-auto max-w-7xl">
+            <div className={`flex flex-col ${!isSoftware ? "items-end text-right ml-auto" : "items-start text-left"}`}>
               <div className={`section-badge mb-5 ${theme.badgeBg}`}>
                 <Sparkles className="h-4 w-4" />
                 {config.badge}
               </div>
-              <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="mb-4 text-sm uppercase tracking-[0.22em] text-gray-400">
+              <motion.p
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`mb-4 text-sm uppercase tracking-[0.22em] ${!isSoftware ? "text-black/60" : "text-gray-400"}`}
+              >
                 {config.eyeBrow}
               </motion.p>
               <motion.h1
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7 }}
-                className="max-w-4xl text-5xl font-black tracking-tight text-white md:text-7xl"
+                className={`max-w-4xl text-5xl font-black tracking-tight md:text-7xl ${!isSoftware ? "text-black" : "text-white"}`}
               >
                 Build for the <span className={theme.headingAccent}>{track}</span> domain.
               </motion.h1>
@@ -142,46 +168,25 @@ export default function TrackExperiencePage({ track }) {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="mt-6 max-w-2xl text-lg leading-8 text-gray-300"
+                className={`mt-6 max-w-2xl text-lg leading-8 ${!isSoftware ? "text-black/80" : "text-gray-300"}`}
               >
                 {config.subtitle}
               </motion.p>
-              <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="mt-8 flex flex-wrap gap-4">
+              <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className={`mt-8 flex flex-wrap gap-4 ${!isSoftware ? "justify-end" : ""}`}>
                 <button onClick={() => setModalOpen(true)} className={`${theme.buttonClass} cursor-target text-base`}>
                   <span>Start registration</span>
                 </button>
-                <a href="#problem-statements" className="btn-sw-secondary cursor-target inline-flex items-center gap-2 text-base">
-                  Explore statements
-                  <ArrowRight className="h-4 w-4" />
-                </a>
               </motion.div>
-            </div>
-
-            <div className={`rounded-sm border ${theme.cardBorder} ${theme.cardBg} p-6 md:p-8`}>
-              <div className="mb-6 flex items-center justify-between">
-                <div className={`section-badge ${theme.badgeBg}`}>Track Brief</div>
-                <div className={`flex h-14 w-14 items-center justify-center rounded-sm text-white ${theme.iconBg}`}>
-                  <Icon className="h-7 w-7" />
-                </div>
-              </div>
-              <div className="space-y-4">
-                {config.highlights.map((item) => (
-                  <div key={item.title} className={`rounded-sm border ${theme.cardBorder} ${theme.cardBg} p-4`}>
-                    <h3 className="mb-1 text-lg font-semibold text-white">{item.title}</h3>
-                    <p className="text-sm leading-6 text-gray-300">{item.text}</p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </section>
 
         <section id="problem-statements" className="px-4 py-20 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <div className="mb-12 max-w-2xl">
+            <div className={`mb-12 max-w-2xl ${!isSoftware ? "ml-auto text-right" : ""}`}>
               <div className={`section-badge mb-4 ${theme.badgeBg}`}>Problem Statements</div>
-              <h2 className="text-3xl font-bold text-white md:text-5xl">Choose a statement worth building around.</h2>
-              <p className="mt-4 text-lg leading-8 text-gray-400">Each statement is a starting point. Your edge comes from how clearly you frame the solution and how convincingly you build it.</p>
+              <h2 className={`text-3xl font-bold md:text-5xl ${!isSoftware ? "text-black" : "text-white"}`}>Choose a statement worth building around.</h2>
+              <p className={`mt-4 text-lg leading-8 ${!isSoftware ? "text-black/60" : "text-gray-400"}`}>Each statement is a starting point. Your edge comes from how clearly you frame the solution and how convincingly you build it.</p>
             </div>
             <div className="grid gap-5 lg:grid-cols-3">
               {statements.map((item, index) => (
@@ -197,8 +202,8 @@ export default function TrackExperiencePage({ track }) {
                       <div className={`rounded-sm border ${theme.tagBorder} px-3 py-1 text-xs font-medium tracking-[0.2em] ${theme.tagText}`}>{item.id}</div>
                       <div className={`h-10 w-10 rounded-sm bg-gradient-to-br ${theme.accentStrip}`} />
                     </div>
-                    <h3 className="mb-3 text-xl font-semibold text-white">{item.title}</h3>
-                    <p className="text-sm leading-7 text-gray-400">{item.summary}</p>
+                    <h3 className={`mb-3 text-xl font-semibold ${!isSoftware ? "text-black" : "text-white"}`}>{item.title}</h3>
+                    <p className={`text-sm leading-7 ${!isSoftware ? "text-black/60" : "text-gray-400"}`}>{item.summary}</p>
                     <div className="mt-5 flex flex-wrap gap-2">
                       {item.tags.map((tag) => (
                         <span key={tag} className={`rounded-sm border ${theme.tagBorder} ${theme.tagBg} px-3 py-1 text-xs ${theme.tagText}`}>{tag}</span>
@@ -213,9 +218,9 @@ export default function TrackExperiencePage({ track }) {
 
         <section className="px-4 py-20 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <div className="mb-12 max-w-2xl">
+            <div className={`mb-12 max-w-2xl ${!isSoftware ? "ml-auto text-right" : ""}`}>
               <div className={`section-badge mb-4 ${theme.badgeBg}`}>Storytelling Flow</div>
-              <h2 className="text-3xl font-bold text-white md:text-5xl">Present a track narrative that feels inevitable.</h2>
+              <h2 className={`text-3xl font-bold md:text-5xl ${!isSoftware ? "text-black" : "text-white"}`}>Present a track narrative that feels inevitable.</h2>
             </div>
             <div className="grid gap-6 lg:grid-cols-3">
               {config.story.map((item, index) => (
@@ -228,8 +233,8 @@ export default function TrackExperiencePage({ track }) {
                 >
                   <div className={`h-full rounded-sm border ${theme.cardBorder} ${theme.cardBg} p-6 transition-all duration-300 ${theme.cardHoverBorder} hover:shadow-[0_0_16px_rgba(0,245,255,0.04)]`}>
                     <div className={`mb-4 text-sm font-medium tracking-[0.2em] ${theme.headingAccent}`}>0{index + 1}</div>
-                    <h3 className="mb-3 text-2xl font-semibold text-white">{item.title}</h3>
-                    <p className="text-sm leading-7 text-gray-300">{item.text}</p>
+                    <h3 className={`mb-3 text-2xl font-semibold ${!isSoftware ? "text-black" : "text-white"}`}>{item.title}</h3>
+                    <p className={`text-sm leading-7 ${!isSoftware ? "text-black/80" : "text-gray-300"}`}>{item.text}</p>
                   </div>
                 </motion.div>
               ))}
@@ -243,8 +248,8 @@ export default function TrackExperiencePage({ track }) {
               <div className={`mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-sm text-white ${theme.iconBg}`}>
                 <CircuitBoard className="h-8 w-8" />
               </div>
-              <h2 className="text-3xl font-bold text-white md:text-5xl">Ready to build for {track}?</h2>
-              <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-gray-400">Lock your track, pick a problem statement, and move straight into the team registration flow.</p>
+              <h2 className={`text-3xl font-bold md:text-5xl ${!isSoftware ? "text-black" : "text-white"}`}>Ready to build for {track}?</h2>
+              <p className={`mx-auto mt-4 max-w-2xl text-lg leading-8 ${!isSoftware ? "text-black/60" : "text-gray-400"}`}>Lock your track, pick a problem statement, and move straight into the team registration flow.</p>
               <div className="mt-8 flex justify-center">
                 <button onClick={() => setModalOpen(true)} className={`${theme.buttonClass} cursor-target text-base`}>
                   <span>Continue to registration</span>

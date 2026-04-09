@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
-import { Home, FileText, Trophy, CalendarDays, PhoneCall, ArrowRight } from "lucide-react";
+import { FileText, ArrowRight } from "lucide-react";
+import hackLogo from "../images/hack-logo.png";
 
 const quickLinks = [
-  { label: "Home", href: "#home", icon: Home },
-  { label: "About", href: "#about", icon: FileText },
-  { label: "Prizes", href: "#prizes", icon: Trophy },
-  { label: "Timeline", href: "#timeline", icon: CalendarDays },
-  { label: "Contact", href: "#contact", icon: PhoneCall },
+  { label: "Team", href: "/team", icon: FileText },
+  { label: "Guidelines", href: "/guidelines", icon: FileText },
 ];
 
 function InstagramIcon({ className }) {
@@ -64,12 +62,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link to="/" className="cursor-target flex items-center gap-3 mb-4 group">
-              <div
-                className="w-10 h-10 rounded-sm flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, var(--sw-graphite), var(--sw-steel))", boxShadow: "0 0 12px rgba(0,245,255,0.15)" }}
-              >
-                <span className="text-white font-bold font-mono text-xs tracking-widest">HX</span>
-              </div>
+              <img src={hackLogo} alt="HACKTRONIX" className="h-10 w-auto md:h-12 object-contain shrink-0" />
               <span className="text-xl font-bold text-white font-mono tracking-wider" style={{ fontFamily: "'Star Jedi', sans-serif" }}>
                 HACK<span className="text-[var(--neon-cyan)]">TRONIX</span>
               </span>
@@ -125,7 +118,7 @@ export default function Footer() {
             &copy; 2026 <span className="text-[var(--neon-cyan)]">HACKTRONIX</span>. All rights reserved.
           </p>
           <p className="muted-2 text-xs font-mono">
-            &gt; Made with passion for innovators_
+            &gt; Developed by Dilli & Mitesh_
           </p>
         </div>
       </div>

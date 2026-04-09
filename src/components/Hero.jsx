@@ -4,10 +4,14 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { MatrixText } from "./MatrixText";
+import bgNormal from "../images/bg-normal.jpeg";
+import bgHover from "../images/bg-hover.jpeg";
+import ProblemStatementPdf from "../images/HackTronix2_0_ProblemStatements.pdf.pdf";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
-const EVENT_DATE = new Date("2026-06-15T09:00:00");
+const EVENT_DATE = new Date("2026-04-29T09:00:00");
 
 function useCountdown(targetDate) {
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -33,7 +37,8 @@ function useCountdown(targetDate) {
   return countdown;
 }
 
-function CountdownItem({ value, label }) {
+function CountdownItem({ value, label, variant = "white" }) {
+  const isWhite = variant === "white";
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
@@ -42,22 +47,27 @@ function CountdownItem({ value, label }) {
       className="flex flex-col items-center"
     >
       <div className="relative">
-        <div className="relative w-16 h-16 md:w-20 md:h-20 glass rounded-xl flex items-center justify-center border border-white/10 overflow-hidden">
-          <span className="text-2xl md:text-3xl font-bold text-white font-mono counter-value">
+        <div className={`relative w-16 h-16 md:w-20 md:h-20 rounded-xl flex items-center justify-center border overflow-hidden ${isWhite ? "bg-white/10 border-white/20" : "bg-black/10 border-black/20"
+          }`}>
+          <span className={`text-2xl md:text-3xl font-bold font-mono counter-value ${isWhite ? "text-white" : "text-black"
+            }`}>
             {String(value).padStart(2, "0")}
           </span>
           {/* Corner accents */}
-          <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-[var(--neon-cyan)] opacity-60" />
-          <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-[var(--neon-cyan)] opacity-60" />
-          <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-[var(--neon-cyan)] opacity-60" />
-          <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-[var(--neon-cyan)] opacity-60" />
+          <div className={`absolute top-0 left-0 w-3 h-3 border-t border-l opacity-60 ${isWhite ? "border-white" : "border-black"}`} />
+          <div className={`absolute top-0 right-0 w-3 h-3 border-t border-r opacity-60 ${isWhite ? "border-white" : "border-black"}`} />
+          <div className={`absolute bottom-0 left-0 w-3 h-3 border-b border-l opacity-60 ${isWhite ? "border-white" : "border-black"}`} />
+          <div className={`absolute bottom-0 right-0 w-3 h-3 border-b border-r opacity-60 ${isWhite ? "border-white" : "border-black"}`} />
         </div>
-        <div className="absolute -inset-1 bg-gradient-to-r from-[var(--neon-cyan)] to-[var(--color-primary)] rounded-xl blur opacity-20" />
+        <div className={`absolute -inset-1 rounded-xl blur opacity-10 ${isWhite ? "bg-white" : "bg-black"
+          }`} />
       </div>
-      <span className="mt-3 text-[10px] text-[var(--neon-cyan)] font-mono uppercase tracking-[0.2em]">{label}</span>
+      <span className={`mt-3 text-[10px] font-mono uppercase tracking-[0.2em] ${isWhite ? "text-white/70" : "text-black/70"
+        }`}>{label}</span>
     </motion.div>
   );
 }
+
 
 function FloatingOrb({ className, delay = 0 }) {
   return (
@@ -70,19 +80,17 @@ function FloatingOrb({ className, delay = 0 }) {
   );
 }
 
-export default function Hero({ onRegisterClick }) {
+export default function Hero() {
+  const [isHovered, setIsHovered] = useState(false);
+
   const countdown = useCountdown(EVENT_DATE);
   const containerRef = useRef(null);
-  const titleRef = useRef(null);
   const frameRef = useRef(null);
+  const mobileTitleRef = useRef(null);
+  const desktopLeftRef = useRef(null);
+  const desktopRightRef = useRef(null);
 
   useGSAP(() => {
-    gsap.fromTo(
-      titleRef.current,
-      { y: 100, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.2, ease: "power4.out", delay: 0.2 }
-    );
-
     gsap.to(containerRef.current, {
       yPercent: 15,
       ease: "none",
@@ -93,6 +101,118 @@ export default function Hero({ onRegisterClick }) {
         scrub: true,
       },
     });
+
+    const slot = document.getElementById("nav-logo-slot");
+    if (!slot) return;
+
+    const mm = gsap.matchMedia();
+
+    mm.add("(max-width: 767px)", () => {
+      const mobileTitle = mobileTitleRef.current;
+      if (!mobileTitle) return;
+
+      gsap.set(mobileTitle, { transformOrigin: "left center", zIndex: 80, position: "relative" });
+
+      const getMobileMetrics = () => {
+        const titleRect = mobileTitle.getBoundingClientRect();
+        const slotRect = slot.getBoundingClientRect();
+        const targetFontSize = 22;
+        const sourceFontSize = parseFloat(window.getComputedStyle(mobileTitle).fontSize) || 64;
+        const scale = targetFontSize / sourceFontSize;
+        const targetLeft = slotRect.right + 80;
+        const targetCenterY = slotRect.top + slotRect.height / 2;
+
+        return {
+          x: targetLeft - titleRect.left,
+          y: targetCenterY - (titleRect.top + titleRect.height / 2),
+          scale,
+        };
+      };
+
+      gsap.to(mobileTitle, {
+        x: () => getMobileMetrics().x,
+        y: () => getMobileMetrics().y,
+        scale: () => getMobileMetrics().scale,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "+=780",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+    });
+
+    mm.add("(min-width: 768px)", () => {
+      const desktopLeft = desktopLeftRef.current;
+      const desktopRight = desktopRightRef.current;
+      if (!desktopLeft || !desktopRight) return;
+
+      gsap.set([desktopLeft, desktopRight], {
+        transformOrigin: "left center",
+        zIndex: 80,
+        position: "relative",
+      });
+
+      const getDesktopMetrics = () => {
+        const leftRect = desktopLeft.getBoundingClientRect();
+        const rightRect = desktopRight.getBoundingClientRect();
+        const slotRect = slot.getBoundingClientRect();
+        const targetFontSize = 24;
+
+        const leftSourceFont = parseFloat(window.getComputedStyle(desktopLeft).fontSize) || 96;
+        const rightSourceFont = parseFloat(window.getComputedStyle(desktopRight).fontSize) || 96;
+
+        const leftScale = targetFontSize / leftSourceFont;
+        const rightScale = targetFontSize / rightSourceFont;
+
+        const targetLeftBase = slotRect.right + 80;
+        const targetCenterY = slotRect.top + slotRect.height / 2;
+
+        const leftTargetLeft = targetLeftBase;
+        const rightTargetLeft = leftTargetLeft + leftRect.width * leftScale - 2;
+
+        return {
+          leftX: leftTargetLeft - leftRect.left,
+          leftY: targetCenterY - (leftRect.top + leftRect.height / 2),
+          leftScale,
+          rightX: rightTargetLeft - rightRect.left,
+          rightY: targetCenterY - (rightRect.top + rightRect.height / 2),
+          rightScale,
+        };
+      };
+
+      gsap.to(desktopLeft, {
+        x: () => getDesktopMetrics().leftX,
+        y: () => getDesktopMetrics().leftY,
+        scale: () => getDesktopMetrics().leftScale,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "+=780",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      gsap.to(desktopRight, {
+        x: () => getDesktopMetrics().rightX,
+        y: () => getDesktopMetrics().rightY,
+        scale: () => getDesktopMetrics().rightScale,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "+=780",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+    });
+
+    return () => mm.revert();
   }, { scope: containerRef });
 
   useEffect(() => {
@@ -119,94 +239,166 @@ export default function Hero({ onRegisterClick }) {
   }, []);
 
   return (
-    <section 
-      id="home" 
+    <section
+      id="home"
       ref={containerRef}
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
       style={{ "--mouse-x": "50%", "--mouse-y": "50%" }}
     >
-      {/* Animated Background Orbs */}
-      <FloatingOrb className="w-96 h-96 bg-primary/10 -top-48 -left-48" delay={0} />
-      <FloatingOrb className="w-80 h-80 bg-secondary/8 top-1/2 right-0" delay={0.5} />
-      <FloatingOrb className="w-64 h-64 bg-accent/8 bottom-0 left-1/3" delay={1} />
+      {/* BACKGROUNDS */}
 
-      <div className="absolute inset-0 bg-grid-pattern opacity-25 pointer-events-none" />
-
-      {/* Radial Gradient Overlay */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{ 
-          background: `radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(99, 102, 241, 0.08) 0%, transparent 50%)`
+      {/* Desktop Only: Background Image Layers with Smooth Transition */}
+      <div
+        className="hidden md:block absolute inset-0 -z-20 bg-cover bg-center"
+        style={{ backgroundImage: `url(${bgNormal})` }}
+      />
+      <div
+        className="hidden md:block absolute inset-0 -z-10 bg-cover bg-center transition-opacity duration-700 ease-in-out"
+        style={{
+          backgroundImage: `url(${bgHover})`,
+          opacity: isHovered ? 1 : 0
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 relative z-10">
-        <div className="text-center">
-          {/* Badge */}
+      {/* Mobile Only: Original Grid and Orbs */}
+      <div className="md:hidden absolute inset-0 bg-grid-pattern opacity-25 pointer-events-none" />
+      <div className="md:hidden">
+        <FloatingOrb className="w-96 h-96 bg-primary/10 -top-48 -left-48" delay={0} />
+        <FloatingOrb className="w-80 h-80 bg-secondary/8 top-1/2 right-0" delay={0.5} />
+        <FloatingOrb className="w-64 h-64 bg-accent/8 bottom-0 left-1/3" delay={1} />
+      </div>
+
+      {/* Shared/Desktop View: Desktop Orbs */}
+      <div className="hidden md:block">
+        <FloatingOrb className="w-96 h-96 bg-blue-600/10 -top-48 -left-48" delay={0} />
+        <FloatingOrb className="w-80 h-80 bg-red-600/10 top-1/2 right-0" delay={0.5} />
+        <FloatingOrb className="w-64 h-64 bg-orange-600/10 bottom-0 left-1/4" delay={1} />
+      </div>
+
+      {/* Desktop Grid (Lighter) */}
+      <div className="hidden md:block absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+
+      {/* Radial Gradient Overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(99, 102, 241, 0.05) 0%, transparent 50%)`
+        }}
+      />
+
+      {/* CONTENT WRAPPER */}
+      <div className="w-full h-full relative z-10 flex flex-col items-center justify-center">
+
+        {/* MOBILE VIEW (CENTERED) */}
+        <div className="md:hidden max-w-7xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-8"
+            className="mb-6"
           >
-            <span className="section-badge border-glow-cyan">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--neon-cyan)] animate-pulse shadow-[0_0_6px_var(--neon-cyan)]" />
+            <span className="section-badge border-glow-cyan text-[10px]">
+              <span className="w-1 h-1 rounded-full bg-[var(--neon-cyan)] animate-pulse" />
               <span className="font-mono">REGISTRATION OPEN</span>
             </span>
           </motion.div>
 
-          {/* Main Title */}
-          <h1 ref={titleRef} className="mb-6 crt-flicker flex justify-center items-baseline gap-6">
-            <span className="text-5xl md:text-8xl font-extrabold text-white tracking-wider" style={{ fontFamily: "'Star Jedi', sans-serif" }}>
-              HAcktronix
-            </span>
-            <span className="text-5xl md:text-8xl text-[var(--neon-cyan)] tracking-wider" style={{ fontFamily: "'Star Jedi', sans-serif", textShadow: "0 0 12px rgba(0,245,255,0.6), 0 0 24px rgba(0,245,255,0.3)" }}>
-              2.0
-            </span>
+          <h1 ref={mobileTitleRef} className="text-4xl sm:text-5xl font-extrabold text-white mb-6 tracking-wider crt-flicker" style={{ fontFamily: "'Star Jedi', sans-serif" }}>
+            HACKTRONIX <span className="text-[var(--neon-cyan)]">2.0</span>
           </h1>
 
-          {/* Tagline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed"
-          >
+          <p className="text-base text-gray-400 mb-10 max-w-sm mx-auto leading-relaxed">
             A 24-hour hackathon exploring the upside-down world of technology
-          </motion.p>
+          </p>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
-          >
+          <div className="flex flex-col gap-4 mb-12">
             <button
-              onClick={onRegisterClick}
-              className="btn-sw-primary cursor-target text-base"
+              onClick={() => window.open('https://forms.gle/BeM11evVkda1sm5N8', '_blank')}
+              className="btn-sw-primary py-3"
             >
               <span>Register Now</span>
             </button>
-            <a href="/brochure.pdf" download className="btn-sw-secondary cursor-target text-base font-mono">
-              Download Brochure
+            <a href={ProblemStatementPdf} download="HackTronix2_0_ProblemStatements.pdf" className="btn-sw-secondary py-3 font-mono text-sm">
+              Problem Statement
             </a>
-          </motion.div>
+          </div>
 
-          {/* Countdown */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.2 }}
-            className="flex justify-center gap-4 md:gap-8"
-          >
+          <div className="flex justify-center gap-4">
             <CountdownItem value={countdown.days} label="Days" />
             <CountdownItem value={countdown.hours} label="Hours" />
-            <CountdownItem value={countdown.minutes} label="Minutes" />
-            <CountdownItem value={countdown.seconds} label="Seconds" />
-          </motion.div>
+            <CountdownItem value={countdown.minutes} label="Min" />
+            <CountdownItem value={countdown.seconds} label="Sec" />
+          </div>
+        </div>
+
+        {/* DESKTOP VIEW (SPLIT) */}
+        <div className="hidden md:flex w-full h-full flex-row">
+          {/* Left Side: Light Theme */}
+          <div
+            className="w-1/2 flex flex-col items-end justify-center pr-4 text-right transition-all duration-500"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="flex flex-col items-end"
+            >
+              <h1 ref={desktopLeftRef} className="text-8xl text-white tracking-[0.1em] mb-4" style={{ fontFamily: "'Star Jedi', sans-serif" }}>
+                HACKTR
+              </h1>
+              <p className="text-xl text-white/80 mb-10 max-w-md font-medium">
+                A 24-hour hackathon exploring the
+              </p>
+              <button
+                onClick={() => window.open('https://forms.gle/BeM11evVkda1sm5N8', '_blank')}
+                className="px-8 py-4 bg-white text-black font-bold uppercase tracking-widest text-sm rounded-sm hover:bg-white/90 transition-all mb-12 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+              >
+                Register Now
+              </button>
+              <div className="flex gap-8">
+                <CountdownItem value={countdown.days} label="Days" variant="white" />
+                <CountdownItem value={countdown.hours} label="Hours" variant="white" />
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Side: Dark Theme */}
+          <div
+            className="w-1/2 flex flex-col items-start justify-center pl-4 text-left transition-all duration-500"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="flex flex-col items-start"
+            >
+              <h1 ref={desktopRightRef} className="text-8xl text-black tracking-[0.1em] mb-4" style={{ fontFamily: "'Star Jedi', sans-serif" }}>
+                onix 2.0
+              </h1>
+              <p className="text-xl text-black/80 mb-10 max-w-md font-medium">
+                upside-down world of technology
+              </p>
+              <a
+                href={ProblemStatementPdf}
+                download="HackTronix2_0_ProblemStatements.pdf"
+                className="inline-block px-8 py-4 bg-black text-white font-bold uppercase tracking-widest text-sm rounded-sm hover:bg-black/90 transition-all mb-12 shadow-[0_0_20px_rgba(0,0,0,0.2)] border border-white/10"
+              >
+                Problem Statement
+              </a>
+              <div className="flex gap-8">
+                <CountdownItem value={countdown.minutes} label="Minutes" variant="black" />
+                <CountdownItem value={countdown.seconds} label="Seconds" variant="black" />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
+
+
 
       {/* Bottom Fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg to-transparent pointer-events-none" />

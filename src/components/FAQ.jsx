@@ -71,10 +71,10 @@ export default function FAQ({ isFullPage = false }) {
   ] : faqData;
 
   return (
-    <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <section id="faq" className="py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
-      
+
       <div className="mx-auto max-w-4xl relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -85,7 +85,7 @@ export default function FAQ({ isFullPage = false }) {
         >
 
           <h2 className="mb-4 text-center text-3xl font-black tracking-tight text-white md:text-5xl">
-            Frequently Asked <span className="heading-gradient">Questions</span>
+            Frequently Asked <span className="text-[#ff2d55] font-['Exo_2']">Questions</span>
           </h2>
         </motion.div>
 

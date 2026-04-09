@@ -1,26 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Trophy, Medal } from "lucide-react";
-import AccentCard from "./ui/AccentCard";
 
 const prizes = [
-  {
-    category: "Software",
-    gradient: "from-blue-500 to-cyan-400",
-    items: [
-      { rank: "1st", amount: "₹15,000", icon: Trophy },
-      { rank: "2nd", amount: "₹10,000", icon: Medal },
-    ],
-  },
-  {
-    category: "Hardware",
-    gradient: "from-purple-500 to-pink-400",
-    items: [
-      { rank: "1st", amount: "₹15,000", icon: Trophy },
-      { rank: "2nd", amount: "₹10,000", icon: Medal },
-    ],
-  },
+  { rank: "1st", amount: "₹15,000", icon: Trophy },
+  { rank: "2nd", amount: "₹10,000", icon: Medal },
+  { rank: "3rd", amount: "₹5,000", icon: Medal },
 ];
+
+const displayOrder = [prizes[2], prizes[0], prizes[1]];
+
+const gradients = {
+  "1st": "from-yellow-500 to-amber-400",
+  "2nd": "from-gray-300 to-gray-400",
+  "3rd": "from-orange-600 to-amber-600",
+};
 
 function useCountUp(target, duration = 1500, start = false) {
   const [count, setCount] = useState(0);
@@ -42,16 +36,18 @@ function useCountUp(target, duration = 1500, start = false) {
     };
 
     requestAnimationFrame(step);
-    return () => {};
+    return () => { };
   }, [start, target, duration]);
 
-  return `${target.match(/^[^0-9]*/)[0]}${count.toLocaleString()}${target.replace(/^[^0-9]*/, "").replace(/[0-9]/g, "")}`;
+  return `${target.match(/^[^0-9]*/)[0]}${count.toLocaleString()}`;
 }
 
-function PrizeCard({ rank, amount, icon: Icon, gradient, index }) {
+function PrizeCard({ rank, amount, icon: Icon, index }) {
   const ref = useRef(null);
   const [started, setStarted] = useState(false);
   const animatedAmount = useCountUp(amount, 1400, started);
+  const gradient = gradients[rank];
+  const isFirst = rank === "1st";
 
   useEffect(() => {
     const el = ref.current;
@@ -64,11 +60,13 @@ function PrizeCard({ rank, amount, icon: Icon, gradient, index }) {
     return () => observer.disconnect();
   }, []);
 
-  const isFirst = rank === "1st";
-
   return (
     <motion.div
       ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.5 }}
       whileHover={{ scale: 1.02, y: -4 }}
       className="relative"
     >
@@ -90,7 +88,7 @@ function PrizeCard({ rank, amount, icon: Icon, gradient, index }) {
             )}
             {!isFirst && (
               <span className="sw-label-warning">
-                {rank === "2nd" ? "RUNNER-UP" : rank}
+                {rank === "2nd" ? "RUNNER-UP" : rank.toUpperCase()}
               </span>
             )}
           </div>
@@ -106,7 +104,7 @@ function PrizeCard({ rank, amount, icon: Icon, gradient, index }) {
 
 export default function Prizes() {
   return (
-    <section id="prizes" className="py-20 md:py-32 relative overflow-hidden">
+    <section id="prizes" className="py-12 md:py-20 relative overflow-hidden">
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
 
@@ -118,42 +116,17 @@ export default function Prizes() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 mt-4">
-            Win Exciting <span className="heading-gradient">Rewards</span>
+            Win Exciting <span className="text-[#ff2d55] font-['Exo_2']">Rewards</span>
           </h2>
           <p className="muted max-w-xl mx-auto text-lg">
-            Compete across software and hardware tracks for cash prizes and exclusive goodies
+            Compete for cash prizes and exclusive goodies
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-          {prizes.map((category, idx) => (
-            <motion.div
-              key={category.category}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.15 }}
-              className="relative"
-            >
-              <AccentCard gradient={category.gradient} className="p-6 md:p-7">
-                <div className="mb-6 flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-sm bg-gradient-to-r ${category.gradient} flex items-center justify-center`}>
-                    <span className="text-white font-bold text-sm font-mono">
-                      {category.category === "Software" ? "S" : "H"}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-white font-mono tracking-wider">{category.category} Track</h3>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {category.items.map((prize) => (
-                    <PrizeCard key={prize.rank} {...prize} gradient={category.gradient} />
-                  ))}
-                </div>
-              </AccentCard>
-            </motion.div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          {displayOrder.map((prize, idx) => (
+            <PrizeCard key={prize.rank} {...prize} index={idx} />
           ))}
         </div>
       </div>

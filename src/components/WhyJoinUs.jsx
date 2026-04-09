@@ -24,8 +24,8 @@ const features = [
 ];
 
 const stats = [
-  { value: "500+", label: "Participants", icon: Users, gradient: "from-primary to-secondary" },
-  { value: "₹1.4L+", label: "Prize Pool", icon: Award, gradient: "from-green-500 to-emerald-400" },
+  { value: "200+", label: "Participants", icon: Users, gradient: "from-primary to-secondary" },
+  { value: "₹30,000", label: "Prize Pool", icon: Award, gradient: "from-green-500 to-emerald-400" },
   { value: "5", label: "Domains", icon: Layers, gradient: "from-blue-500 to-cyan-400" },
   { value: "24", label: "Hours", icon: Clock, gradient: "from-purple-500 to-pink-400" },
 ];
@@ -119,7 +119,7 @@ function StatCard({ value, label, icon: Icon, gradient, index }) {
 
 export default function WhyJoinUs() {
   return (
-    <section id="why-join" className="py-20 md:py-32 relative overflow-hidden">
+    <section id="why-join" className="py-12 md:py-20 relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -132,7 +132,7 @@ export default function WhyJoinUs() {
         >
 
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 mt-4">
-            Level Up Your <span className="heading-gradient">Skills</span>
+            Level Up Your <span className="text-[#ff2d55] font-['Exo_2']">Skills</span>
           </h2>
           <p className="muted max-w-xl mx-auto text-lg">
             Join HACKTRONIX 2.0 and accelerate your journey in tech innovation

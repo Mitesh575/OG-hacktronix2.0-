@@ -1,7 +1,8 @@
 import Galaxy from "../components/Galaxy";
 import TargetCursor from "../components/TargetCursor";
+import GlassCard from "../components/ui/GlassCard";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import hackLogo from "../images/hack-logo.png";
 
 const generalRules = [
   "Each team must consist of a minimum of 2 members and a maximum of 4 members.",
@@ -38,7 +39,7 @@ const hackTronixRules = [
   "From all registered teams, the top 30 teams will advance to the grand finale.",
   "Bonus points will be awarded for proper version control on GitHub.",
   "Teams must follow the provided PPT template for submissions.",
-  "Participants must regularly check the HackTronix 1.0 website for updates.",
+  "Participants must regularly check the Hacktronix 2.0 website for updates.",
   "Teams interested in donating their projects for public use are welcome to do so.",
 ];
 
@@ -57,19 +58,14 @@ export default function GuidelinesPage() {
       </div>
 
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[rgba(10,10,14,0.72)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link to="/" className="cursor-target inline-flex items-center gap-3 text-white">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-secondary font-bold">HX</span>
-            <span className="text-lg font-semibold">HACKTRONIX</span>
-          </Link>
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-x-8 px-4 py-4 sm:px-6 lg:px-8">
+          <Link to="/" className="cursor-target">
+              <img src={hackLogo} alt="HACKTRONIX" className="h-16 w-auto md:h-20 shrink-0 object-contain" />
+            </Link>
           <div className="flex items-center gap-3">
             <a href="/team" className="cursor-target inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-gray-300 transition hover:text-white">
               Team
             </a>
-            <Link to="/" className="cursor-target inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-gray-300 transition hover:text-white">
-              <ArrowLeft className="h-4 w-4" />
-              Back home
-            </Link>
           </div>
         </div>
       </header>
@@ -84,57 +80,51 @@ export default function GuidelinesPage() {
             The following rules apply to all participants and teams. Please read them carefully before the event.
           </p>
 
-          {/* General Rules Section */}
+          {/* Hacktronix 2.0 Rules Section */}
           <div className="mt-12">
-            <h2 className="mb-6 text-2xl font-bold text-white">General Rules</h2>
-            <div className="space-y-4">
-              {generalRules.map((rule, idx) => (
-                <div key={idx} className="rounded-xl border border-white/10 bg-white/5 p-4 md:p-5">
-                  <div className="flex items-start gap-4">
-                    <span className="flex-shrink-0 rounded-full bg-gradient-to-br from-[var(--neon-cyan)] to-[var(--color-primary)] p-2.5 text-sm font-bold text-white">{idx + 1}</span>
-                    <p className="text-sm leading-7 text-gray-300">{rule}</p>
+            <h2 className="mb-6 text-2xl font-bold text-white tracking-widest uppercase font-mono border-l-4 border-cyan-500 pl-4">Hacktronix 2.0 Rules</h2>
+            <GlassCard className="p-6 md:p-8 rounded-sm">
+              <div className="space-y-4">
+                {hackTronixRules.map((rule, idx) => (
+                  <div key={idx} className="flex items-start gap-4 group">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-sm bg-cyan-500/10 flex items-center justify-center text-xs font-bold text-cyan-400 border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-colors">{idx + 1}</span>
+                    <p className="text-sm leading-7 text-gray-300 group-hover:text-white transition-colors">{rule}</p>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </GlassCard>
           </div>
 
-          {/* HackTronix 1.0 Rules Section */}
+          {/* General Rules Section */}
           <div className="mt-16">
-            <h2 className="mb-6 text-2xl font-bold text-white">HackTronix 1.0 Rules</h2>
-            <div className="space-y-4">
-              {hackTronixRules.map((rule, idx) => (
-                <div key={idx} className="rounded-xl border border-white/10 bg-white/5 p-4 md:p-5">
-                  <div className="flex items-start gap-4">
-                    <span className="flex-shrink-0 rounded-full bg-gradient-to-br from-[var(--neon-cyan)] to-[var(--color-primary)] p-2.5 text-sm font-bold text-white">{idx + 1}</span>
-                    <p className="text-sm leading-7 text-gray-300">{rule}</p>
+            <h2 className="mb-6 text-2xl font-bold text-white tracking-widest uppercase font-mono border-l-4 border-red-500 pl-4">General Rules</h2>
+            <GlassCard className="p-6 md:p-8 rounded-sm">
+              <div className="space-y-4">
+                {generalRules.map((rule, idx) => (
+                  <div key={idx} className="flex items-start gap-4 group">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-sm bg-red-500/10 flex items-center justify-center text-xs font-bold text-red-500 border border-red-500/20 group-hover:bg-red-500/20 transition-colors">{idx + 1}</span>
+                    <p className="text-sm leading-7 text-gray-300 group-hover:text-white transition-colors">{rule}</p>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </GlassCard>
           </div>
 
           {/* Compliance and Enforcement Section */}
           <div className="mt-16">
-            <h2 className="mb-6 text-2xl font-bold text-white">Compliance and Enforcement</h2>
-            <div className="space-y-4">
-              {complianceRules.map((rule, idx) => (
-                <div key={idx} className="rounded-xl border border-white/10 bg-white/5 p-4 md:p-5">
-                  <div className="flex items-start gap-4">
-                    <span className="flex-shrink-0 rounded-full bg-gradient-to-br from-[var(--neon-cyan)] to-[var(--color-primary)] p-2.5 text-sm font-bold text-white">{idx + 1}</span>
-                    <p className="text-sm leading-7 text-gray-300">{rule}</p>
+            <h2 className="mb-6 text-2xl font-bold text-white tracking-widest uppercase font-mono border-l-4 border-orange-500 pl-4">Compliance and Enforcement</h2>
+            <GlassCard className="p-6 md:p-8 rounded-sm">
+              <div className="space-y-4">
+                {complianceRules.map((rule, idx) => (
+                  <div key={idx} className="flex items-start gap-4 group">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-sm bg-orange-500/10 flex items-center justify-center text-xs font-bold text-orange-500 border border-orange-500/20 group-hover:bg-orange-500/20 transition-colors">{idx + 1}</span>
+                    <p className="text-sm leading-7 text-gray-300 group-hover:text-white transition-colors">{rule}</p>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </GlassCard>
           </div>
 
-          <div className="mt-12 flex justify-center">
-            <Link to="/" className="btn-secondary cursor-target inline-flex items-center gap-2 text-base">
-              <ArrowLeft className="h-4 w-4" />
-              Return to Home
-            </Link>
-          </div>
         </div>
       </main>
     </div>

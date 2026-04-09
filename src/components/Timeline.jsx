@@ -40,7 +40,7 @@ export default function Timeline() {
   const sectionRef = useRef(null);
 
   return (
-    <section ref={sectionRef} id="timeline" className="py-20 md:py-32 relative overflow-hidden">
+    <section ref={sectionRef} id="timeline" className="py-12 md:py-20 relative overflow-hidden">
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
 
@@ -54,7 +54,7 @@ export default function Timeline() {
         >
 
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 mt-4">
-            Event <span className="heading-gradient">Schedule</span>
+            Event <span className="text-[#ff2d55] font-['Exo_2']">Schedule</span>
           </h2>
           <p className="muted max-w-xl mx-auto text-lg">
             Key dates and milestones for HackTronix 2.0

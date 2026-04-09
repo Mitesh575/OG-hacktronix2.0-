@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Zap, Clock, Rocket } from "lucide-react";
+import { Zap, Clock } from "lucide-react";
 import GlassCard from "./ui/GlassCard";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -17,12 +17,8 @@ const scrollySections = [
     subtitle: "Push your limits in an intense high-stakes environment.",
     icon: Clock,
   },
-  {
-    title: "Are You Ready?",
-    subtitle: "The future of technology awaits your breakthrough.",
-    icon: Rocket,
-  },
 ];
+
 
 export default function Scrollytelling() {
   const containerRef = useRef(null);
@@ -56,7 +52,7 @@ export default function Scrollytelling() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=1400",
+          end: "+=900",
           scrub: 1,
           pin: true,
           anticipatePin: 1,

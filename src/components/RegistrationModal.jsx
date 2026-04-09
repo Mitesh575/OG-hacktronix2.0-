@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { ArrowLeft, Check, ChevronRight, Cpu, Layers3, Sparkles, Wrench } from "lucide-react";
+import { ArrowLeft, Check, ChevronRight, Cpu, Layers3, Sparkles, Wrench, Plus, X } from "lucide-react";
 import { db } from "../lib/firebase";
 import { sendConfirmationEmail } from "../lib/emailjs";
 import GlassCard from "./ui/GlassCard";
@@ -40,6 +40,12 @@ const modalTheme = {
   },
 };
 
+const memberSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(10, "Phone must be at least 10 digits"),
+});
+
 const registrationSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
@@ -51,10 +57,10 @@ const registrationSchema = z.object({
   }),
   problemStatement: z.string().min(1, "Please select a problem statement"),
   problemStatementId: z.string().min(1, "Please select a problem statement"),
-  teamSize: z.number().min(2).max(5),
+  members: z.array(memberSchema).min(2, "At least 2 members required").max(5, "Maximum 5 members allowed"),
 });
 
-function ModalShell({ children, onClose }) {
+function ModalShell({ children, onClose, isDarkPopup }) {
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -111,12 +117,20 @@ function ModalShell({ children, onClose }) {
         className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
       />
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        initial={{ opacity: 0, scale: 0.96, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        exit={{ opacity: 0, scale: 0.96, y: 16 }}
+        transition={{ type: "spring", stiffness: 320, damping: 28 }}
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
       >
-        <div ref={modalRef} className="w-full max-w-4xl max-h-[92vh] overflow-y-auto overscroll-contain rounded-sm border border-[rgba(0,245,255,0.08)] bg-[rgba(14,14,20,0.96)] shadow-2xl shadow-black/60 backdrop-blur-xl" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(0,245,255,0.2) transparent" }}>
+        <div
+          ref={modalRef}
+          className={`w-full max-w-5xl max-h-[90vh] overflow-y-auto overscroll-contain rounded-lg border transition-colors duration-500 ${
+            isDarkPopup
+              ? "bg-[#0a0a0e] border-white/10 text-white shadow-2xl shadow-black/80"
+              : "bg-white border-black/10 text-black shadow-2xl shadow-black/30"
+          }`}
+        >
           {children}
         </div>
       </motion.div>
@@ -124,58 +138,93 @@ function ModalShell({ children, onClose }) {
   );
 }
 
-function StepBadge({ index, label, active, complete, theme }) {
+function StepBadge({ index, label, active, complete, isDarkPopup }) {
   return (
     <div className="flex items-center gap-3">
       <div
-        className={[
-          "flex h-8 w-8 items-center justify-center rounded-sm border text-sm font-semibold transition-all",
+        className={`flex h-8 w-8 items-center justify-center rounded-md border text-sm font-semibold transition-all ${
           complete
-            ? "text-white"
+            ? isDarkPopup
+              ? "bg-white text-black border-white"
+              : "bg-black text-white border-black"
             : active
-              ? "text-white"
-              : "border-white/10 bg-bg text-gray-500",
-        ].join(" ")}
-        style={complete ? { borderColor: theme.accentBorder, backgroundColor: theme.accentBg } : active ? { borderColor: theme.accentBorder, backgroundColor: theme.accentBg } : {}}
+            ? isDarkPopup
+              ? "bg-white text-black border-white"
+              : "bg-black text-white border-black"
+            : isDarkPopup
+            ? "border-white/10 bg-white/5 text-white/40"
+            : "border-black/10 bg-black/5 text-black/40"
+        }`}
       >
         {complete ? <Check className="h-4 w-4" /> : index}
       </div>
-      <span className={active || complete ? "text-white" : "text-gray-500"}>{label}</span>
+      <span
+        className={`text-sm font-medium ${
+          active || complete
+            ? isDarkPopup
+              ? "text-white"
+              : "text-black"
+            : isDarkPopup
+            ? "text-white/40"
+            : "text-black/40"
+        }`}
+      >
+        {label}
+      </span>
     </div>
   );
 }
 
-function TrackCard({ title, description, bullets, icon: Icon, active, onClick, theme }) {
+function TrackCard({ title, description, bullets, icon: Icon, active, onClick, isDarkPopup }) {
   return (
     <GlassCard
       as="button"
       type="button"
       onClick={onClick}
-      className={[
-        "cursor-target group w-full p-6 text-left shadow-lg shadow-black/10",
+      className={`cursor-target group w-full p-6 text-left shadow-lg transition-all ${
+        isDarkPopup
+          ? "bg-white/5 border-white/10 text-white"
+          : "bg-black/5 border-black/10 text-black"
+      } ${
         active
-          ? "shadow-[0_0_16px_rgba(0,245,255,0.08)]"
-          : "hover:border-[rgba(0,245,255,0.15)] hover:shadow-[0_0_12px_rgba(0,245,255,0.05)]",
-      ].join(" ")}
+          ? isDarkPopup
+            ? "border-white bg-white/10"
+            : "border-black bg-black/10"
+          : isDarkPopup
+          ? "hover:border-white/30"
+          : "hover:border-black/30"
+      }`}
       interactive
     >
       <div className="relative">
         <div className="mb-5 flex items-center justify-between">
-          <div className="flex h-12 w-12 items-center justify-center rounded-sm text-white shadow-lg" style={{ background: `linear-gradient(135deg, ${theme.accent}, rgba(0,0,0,0.4))`, boxShadow: `0 0 12px ${theme.accentGlow}` }}>
+          <div
+            className={`flex h-12 w-12 items-center justify-center rounded-md ${
+              isDarkPopup ? "bg-white text-black" : "bg-black text-white"
+            }`}
+          >
             <Icon className="h-6 w-6" />
           </div>
           {active && (
-            <div className="rounded-sm px-3 py-1 text-xs font-medium tracking-wider uppercase" style={{ borderColor: theme.accentBorder, backgroundColor: theme.accentBg, color: theme.accent, border: `1px solid ${theme.accentBorder}` }}>
+            <div
+              className={`rounded-md px-3 py-1 text-xs font-bold tracking-wider uppercase ${
+                title === "Hardware" ? "bg-red-600 text-white" : "bg-[#00f5ff] text-black"
+              }`}
+            >
               Selected
             </div>
           )}
         </div>
-        <h3 className="mb-2 text-2xl font-semibold text-white">{title}</h3>
-        <p className="mb-5 text-sm leading-6 text-gray-400">{description}</p>
+        <h3 className={`mb-2 text-2xl font-semibold ${isDarkPopup ? "text-white" : "text-black"}`}>
+          {title}
+        </h3>
+        <p className={`mb-5 text-sm leading-6 ${isDarkPopup ? "text-white/60" : "text-black/60"}`}>
+          {description}
+        </p>
         <div className="space-y-2">
           {bullets.map((bullet) => (
-            <div key={bullet} className="flex items-center gap-2 text-sm text-gray-300">
-              <span className="h-1.5 w-1.5 rounded-sm" style={{ backgroundColor: theme.dotBg }} />
+            <div key={bullet} className="flex items-center gap-2 text-sm">
+              <span className={`h-1.5 w-1.5 rounded-sm ${isDarkPopup ? "bg-white" : "bg-black"}`} />
               {bullet}
             </div>
           ))}
@@ -185,38 +234,66 @@ function TrackCard({ title, description, bullets, icon: Icon, active, onClick, t
   );
 }
 
-function ProblemCard({ item, active, onSelect, theme }) {
+function ProblemCard({ item, active, onSelect, isDarkPopup, track }) {
+  const isRed = track === "Hardware";
   return (
     <GlassCard
       as="button"
       type="button"
       onClick={onSelect}
-      className={[
-        "cursor-target group w-full p-5 text-left shadow-lg shadow-black/10",
+      className={`cursor-target group w-full p-5 text-left shadow-lg transition-all ${
+        isDarkPopup
+          ? "bg-white/5 border-white/10 text-white"
+          : "bg-black/5 border-black/10 text-black"
+      } ${
         active
-          ? "shadow-[0_0_16px_rgba(0,245,255,0.08)]"
-          : "hover:border-[rgba(0,245,255,0.15)] hover:shadow-[0_0_12px_rgba(0,245,255,0.05)]",
-      ].join(" ")}
+          ? isDarkPopup
+            ? "border-white bg-white/10"
+            : "border-black bg-black/10"
+          : isDarkPopup
+          ? "hover:border-white/30"
+          : "hover:border-black/30"
+      }`}
       interactive
     >
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
-          <div className="mb-2 inline-flex rounded-sm px-3 py-1 text-xs font-medium tracking-wide" style={{ borderColor: theme.accentBorder, backgroundColor: theme.accentBg, color: theme.accent, border: `1px solid ${theme.accentBorder}` }}>
+          <div
+            className={`mb-2 inline-flex rounded-md px-3 py-1 text-xs font-bold tracking-wide uppercase ${
+              isRed ? "bg-red-600 text-white" : "bg-[#00f5ff] text-black"
+            }`}
+          >
             {item.id}
           </div>
-          <h3 className="text-lg font-semibold text-white">{item.title}</h3>
+          <h3 className={`text-lg font-semibold ${isDarkPopup ? "text-white" : "text-black"}`}>
+            {item.title}
+          </h3>
         </div>
         <div
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border transition-all"
-          style={active ? { borderColor: theme.accentBorder, backgroundColor: theme.accent, color: "#fff" } : { borderColor: "rgba(255,255,255,0.1)", backgroundColor: "rgba(255,255,255,0.03)", color: "#6b7280" }}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-md border transition-all ${
+            active
+              ? isDarkPopup
+                ? "bg-white text-black border-white"
+                : "bg-black text-white border-black"
+              : isDarkPopup
+              ? "border-white/10 bg-white/5 text-white/40"
+              : "border-black/10 bg-black/5 text-black/40"
+          }`}
         >
           {active ? <Check className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
         </div>
       </div>
-      <p className="mb-4 text-sm leading-6 text-gray-400">{item.summary}</p>
+      <p className={`mb-4 text-sm leading-6 ${isDarkPopup ? "text-white/60" : "text-black/60"}`}>
+        {item.summary}
+      </p>
       <div className="flex flex-wrap gap-2">
         {item.tags.map((tag) => (
-          <span key={tag} className="rounded-sm px-3 py-1 text-xs" style={{ borderColor: "rgba(255,255,255,0.06)", backgroundColor: "rgba(255,255,255,0.03)", color: "#9ca3af", border: "1px solid rgba(255,255,255,0.06)" }}>
+          <span
+            key={tag}
+            className={`rounded-md px-3 py-1 text-[10px] uppercase font-bold tracking-wider ${
+              isDarkPopup ? "bg-white/5 text-white/50" : "bg-black/5 text-black/50"
+            }`}
+          >
             {tag}
           </span>
         ))}
@@ -225,82 +302,121 @@ function ProblemCard({ item, active, onSelect, theme }) {
   );
 }
 
-function Field({ label, error, children }) {
+function Field({ label, error, children, isDarkPopup }) {
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-300">{label}</label>
+      <label
+        className={`block text-sm font-bold uppercase tracking-wider ${
+          isDarkPopup ? "text-white/60" : "text-black/60"
+        }`}
+      >
+        {label}
+      </label>
       {children}
-      {error ? <p className="text-sm text-red-400">{error}</p> : null}
+      {error ? <p className="text-sm font-medium text-red-500">{error}</p> : null}
     </div>
   );
 }
 
-function SummaryPill({ label, value, theme }) {
+function SummaryPill({ label, value, isDarkPopup, track }) {
+  const isRed = track === "Hardware";
   return (
-    <GlassCard className="p-4 md:p-5">
-      <p className="mb-1 text-xs uppercase tracking-[0.2em] text-gray-500">{label}</p>
-      <p className="text-sm font-medium" style={{ color: theme?.accent || "#fff" }}>{value}</p>
-    </GlassCard>
+    <div
+      className={`rounded-md border p-4 md:p-5 ${
+        isDarkPopup ? "bg-white/5 border-white/10" : "bg-black/5 border-black/10"
+      }`}
+    >
+      <p
+        className={`mb-1 text-[10px] uppercase font-bold tracking-[0.2em] ${
+          isDarkPopup ? "text-white/40" : "text-black/40"
+        }`}
+      >
+        {label}
+      </p>
+      <p className={`text-sm font-bold uppercase ${isRed ? "text-red-600" : "text-[#00f5ff]"}`}>
+        {value}
+      </p>
+    </div>
   );
 }
 
-function TeamSizeSelector({ value, onChange, error, theme }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const options = [2, 3, 4, 5];
+function MemberBlock({ index, error, theme, isDarkPopup, register }) {
+  const inputClass = `w-full rounded-md border px-4 py-3 font-medium outline-none transition-all ${
+    isDarkPopup
+      ? "border-white/10 bg-black text-white focus:border-white"
+      : "border-black/10 bg-white text-black focus:border-black"
+  }`;
 
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-300">Team Size</label>
-      <div ref={ref} className="relative">
-        <button
-          type="button"
-          onClick={() => setOpen(!open)}
-          className="w-full rounded-sm border border-white/8 bg-white/[0.03] px-4 py-3 text-white text-left flex items-center justify-between transition hover:border-white/15"
-          style={{ borderColor: open ? theme.accentBorder : undefined }}
+    <div
+      className={`rounded-md border p-4 ${
+        isDarkPopup ? "bg-white/5 border-white/10" : "bg-black/5 border-black/10"
+      }`}
+    >
+      <div className="flex items-center justify-between mb-4">
+        <h4
+          className={`text-sm font-bold uppercase tracking-wider ${
+            isDarkPopup ? "text-white" : "text-black"
+          }`}
         >
-          <span>{value} {value === 1 ? "member" : "members"}</span>
-          <svg className={`w-4 h-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.15 }}
-              className="absolute z-50 w-full bottom-full mb-1 rounded-sm border border-white/8 bg-[rgba(14,14,20,0.98)] backdrop-blur-xl shadow-2xl shadow-black/60 overflow-hidden"
-            >
-              {options.map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  onClick={() => { onChange(n); setOpen(false); }}
-                  className="w-full px-4 py-3 text-left text-sm text-gray-300 transition-colors hover:bg-white/5 flex items-center justify-between"
-                  style={n === value ? { backgroundColor: theme.accentBg, color: "#fff" } : {}}
-                >
-                  <span>{n} {n === 1 ? "member" : "members"}</span>
-                  {n === value && <Check className="w-4 h-4" style={{ color: theme.accent }} />}
-                </button>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+          Member {index + 1}
+        </h4>
       </div>
-      {error ? <p className="text-sm text-red-400">{error}</p> : null}
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="space-y-1">
+          <label
+            className={`block text-xs font-bold uppercase tracking-wider ${
+              isDarkPopup ? "text-white/50" : "text-black/50"
+            }`}
+          >
+            Name
+          </label>
+          <input
+            {...register(`members.${index}.name`)}
+            className={inputClass}
+            placeholder="Member name"
+          />
+          {error?.name?.message && (
+            <p className="text-xs font-medium text-red-500">{error.name.message}</p>
+          )}
+        </div>
+        <div className="space-y-1">
+          <label
+            className={`block text-xs font-bold uppercase tracking-wider ${
+              isDarkPopup ? "text-white/50" : "text-black/50"
+            }`}
+          >
+            Email
+          </label>
+          <input
+            {...register(`members.${index}.email`)}
+            type="email"
+            className={inputClass}
+            placeholder="Member email"
+          />
+          {error?.email?.message && (
+            <p className="text-xs font-medium text-red-500">{error.email.message}</p>
+          )}
+        </div>
+        <div className="space-y-1">
+          <label
+            className={`block text-xs font-bold uppercase tracking-wider ${
+              isDarkPopup ? "text-white/50" : "text-black/50"
+            }`}
+          >
+            Phone
+          </label>
+          <input
+            {...register(`members.${index}.phone`)}
+            type="tel"
+            className={inputClass}
+            placeholder="Member phone"
+          />
+          {error?.phone?.message && (
+            <p className="text-xs font-medium text-red-500">{error.phone.message}</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -310,6 +426,7 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
   const [success, setSuccess] = useState(false);
   const [regId, setRegId] = useState("");
   const [step, setStep] = useState("track");
+  const [memberCount, setMemberCount] = useState(2);
 
   const {
     register,
@@ -322,7 +439,10 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
   } = useForm({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
-      teamSize: 2,
+      members: [
+        { name: "", email: "", phone: "" },
+        { name: "", email: "", phone: "" },
+      ],
       track: undefined,
       problemStatement: "",
       problemStatementId: "",
@@ -341,13 +461,17 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
       setSuccess(false);
       setRegId("");
       setStep(initialTrack ? "problem" : "track");
+      setMemberCount(2);
       reset({
         name: "",
         email: "",
         phone: "",
         college: "",
         teamName: "",
-        teamSize: 2,
+        members: [
+          { name: "", email: "", phone: "" },
+          { name: "", email: "", phone: "" },
+        ],
         track: initialTrack || undefined,
         problemStatement: "",
         problemStatementId: "",
@@ -379,6 +503,22 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
     setStep("form");
   };
 
+  const addMember = () => {
+    if (memberCount < 5) {
+      const newCount = memberCount + 1;
+      setMemberCount(newCount);
+      setValue(`members.${newCount - 1}`, { name: "", email: "", phone: "" });
+    }
+  };
+
+  const removeMember = () => {
+    if (memberCount > 2) {
+      const newCount = memberCount - 1;
+      setMemberCount(newCount);
+      setValue(`members.${newCount}`, undefined);
+    }
+  };
+
   const onSubmit = async (data) => {
     setSubmitting(true);
     try {
@@ -392,7 +532,6 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
         createdAt: serverTimestamp(),
       });
 
-      // Send confirmation email — silently fail so registration still succeeds
       sendConfirmationEmail({ ...data, regId: generatedRegId }).catch((e) =>
         console.warn("Email send failed:", e)
       );
@@ -409,21 +548,29 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
   const stepNumber = step === "track" ? 1 : step === "problem" ? 2 : 3;
   const showTrackStep = !initialTrack;
   const theme = modalTheme[selectedTrack] || modalTheme.neutral;
+  const isHardware = selectedTrack === "Hardware";
+  const isDarkPopup = isHardware;
 
   return (
     <AnimatePresence>
       {isOpen ? (
-        <ModalShell onClose={onClose}>
+        <ModalShell onClose={onClose} isDarkPopup={isDarkPopup}>
           {success ? (
-            <div className="p-8 md:p-10 text-center">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-sm text-green-400" style={{ backgroundColor: "rgba(34,197,94,0.15)" }}>
+            <div className={`p-8 md:p-10 text-center ${isDarkPopup ? "text-white" : "text-black"}`}>
+              <div
+                className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-md text-green-400"
+                style={{ backgroundColor: "rgba(34,197,94,0.15)" }}
+              >
                 <Check className="h-8 w-8" />
               </div>
-              <h3 className="mb-2 text-2xl font-bold text-white">Registration Successful</h3>
-              <p className="mb-4 text-gray-400">Your registration ID is</p>
-              <p className="mb-6 text-2xl font-bold font-mono" style={{ color: theme.accent }}>{regId}</p>
-              <p className="mx-auto mb-8 max-w-md text-sm leading-6 text-gray-400">
-                Save this ID for future reference. You can always replace the placeholder problem statements later.
+              <h3 className={`mb-2 text-2xl font-bold ${isDarkPopup ? "text-white" : "text-black"}`}>Registration Successful</h3>
+              <p className={`mb-4 ${isDarkPopup ? "text-gray-400" : "text-black/60"}`}>Your registration ID is</p>
+              <p className="mb-6 text-2xl font-bold font-mono" style={{ color: theme.accent }}>
+                {regId}
+              </p>
+              <p className={`mx-auto mb-8 max-w-md text-sm leading-6 ${isDarkPopup ? "text-gray-400" : "text-black/60"}`}>
+                Save this ID for future reference. You can always replace the placeholder problem
+                statements later.
               </p>
               <button onClick={onClose} className={`${theme.buttonClass} cursor-target text-sm`}>
                 <span>Close</span>
@@ -433,60 +580,112 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
             <div className="p-6 md:p-8">
               <div className="mb-8 flex items-start justify-between gap-4">
                 <div>
-                  <div className="section-badge mb-4">
+                  <div
+                    className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-xs font-bold uppercase tracking-wider mb-4 ${
+                      isHardware ? "!bg-red-600 !text-white" : "!bg-[#00f5ff] !text-black"
+                    }`}
+                  >
                     <Sparkles className="h-4 w-4" />
                     Team Registration
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-white">Register for HACKTRONIX</h2>
-                  <p className="mt-2 max-w-2xl text-sm md:text-base text-gray-400">
-                    Pick your track, choose a problem statement, then complete your team registration.
+                  <h2
+                    className={`text-2xl md:text-3xl font-black uppercase tracking-tight ${
+                      isDarkPopup ? "text-white" : "text-black"
+                    }`}
+                  >
+                    Register for HACKTRONIX
+                  </h2>
+                  <p
+                    className={`mt-2 max-w-2xl text-sm md:text-base font-medium ${
+                      isDarkPopup ? "text-white/60" : "text-black/60"
+                    }`}
+                  >
+                    Pick your track, choose a problem statement, then complete your team
+                    registration.
                   </p>
                 </div>
-                <button onClick={onClose} className="cursor-target rounded-sm border border-white/8 bg-white/[0.03] p-2 text-gray-400 transition hover:text-white">
+                <button
+                  onClick={onClose}
+                  className={`cursor-target rounded-md border p-2 transition-all ${
+                    isDarkPopup
+                      ? "border-white/20 text-white hover:bg-white/10"
+                      : "border-black/20 text-black hover:bg-black/10"
+                  }`}
+                >
                   <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
 
-              <div className="mb-8 flex flex-wrap gap-4">
-                {showTrackStep ? <StepBadge index={1} label="Track" active={step === "track"} complete={stepNumber > 1} theme={theme} /> : null}
+              <div className="mb-10 flex flex-wrap gap-6">
+                {showTrackStep ? (
+                  <StepBadge
+                    index={1}
+                    label="Track"
+                    active={step === "track"}
+                    complete={stepNumber > 1}
+                    isDarkPopup={isDarkPopup}
+                  />
+                ) : null}
                 <StepBadge
                   index={showTrackStep ? 2 : 1}
                   label="Problem Statement"
                   active={step === "problem"}
                   complete={showTrackStep ? stepNumber > 2 : step === "form"}
-                  theme={theme}
+                  isDarkPopup={isDarkPopup}
                 />
-                <StepBadge index={showTrackStep ? 3 : 2} label="Team Details" active={step === "form"} complete={false} theme={theme} />
+                <StepBadge
+                  index={showTrackStep ? 3 : 2}
+                  label="Team Details"
+                  active={step === "form"}
+                  complete={false}
+                  isDarkPopup={isDarkPopup}
+                />
               </div>
 
               {showTrackStep && step === "track" ? (
                 <div>
                   <div className="mb-6 max-w-2xl">
-                    <h3 className="text-xl font-semibold text-white">Choose your track</h3>
-                    <p className="mt-2 text-sm leading-6 text-gray-400">
-                      Start by selecting the competition track your team wants to build for.
-                    </p>
+                    <h3
+                      className={`text-xl font-black uppercase tracking-tight ${
+                        isDarkPopup ? "text-white" : "text-black"
+                      }`}
+                    >
+                      Choose your track
+                    </h3>
                   </div>
                   <div className="grid gap-5 md:grid-cols-2 items-stretch">
                     <TrackCard
                       title="Software"
                       description="Ideal for teams building platforms, apps, AI tools, dashboards, and digital systems."
-                      bullets={["Web or mobile products", "AI-powered workflows", "Platform and dashboard ideas"]}
+                      bullets={[
+                        "Web or mobile products",
+                        "AI-powered workflows",
+                        "Platform and dashboard ideas",
+                      ]}
                       icon={Layers3}
                       active={selectedTrack === "Software"}
                       onClick={() => chooseTrack("Software")}
-                      theme={modalTheme.Software}
+                      isDarkPopup={isDarkPopup}
                     />
                     <TrackCard
                       title="Hardware"
                       description="Best for teams creating embedded, IoT, automation, robotics, or sensor-based solutions."
-                      bullets={["Physical prototypes", "Embedded and IoT systems", "Automation and sensing"]}
+                      bullets={[
+                        "Physical prototypes",
+                        "Embedded and IoT systems",
+                        "Automation and sensing",
+                      ]}
                       icon={Cpu}
                       active={selectedTrack === "Hardware"}
                       onClick={() => chooseTrack("Hardware")}
-                      theme={modalTheme.Hardware}
+                      isDarkPopup={isDarkPopup}
                     />
                   </div>
                 </div>
@@ -496,27 +695,46 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
                 <div>
                   <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
                     <div>
-                      <h3 className="text-xl font-semibold text-white">Choose a {selectedTrack} problem statement</h3>
-                      <p className="mt-2 text-sm leading-6 text-gray-400">
-                        Placeholder cards are wired in for now. You can replace them with final statements later.
-                      </p>
+                      <h3
+                        className={`text-xl font-black uppercase tracking-tight ${
+                          isDarkPopup ? "text-white" : "text-black"
+                        }`}
+                      >
+                        Choose a {selectedTrack} statement
+                      </h3>
                     </div>
                     <button
                       type="button"
                       onClick={() => (showTrackStep ? setStep("track") : onClose())}
-                      className="cursor-target inline-flex items-center gap-2 rounded-sm border border-white/8 bg-white/[0.03] px-4 py-2 text-sm text-gray-300 transition hover:border-[rgba(0,245,255,0.2)] hover:text-white"
+                      className={`cursor-target inline-flex items-center gap-2 rounded-md border px-5 py-2 text-xs font-bold uppercase transition-all ${
+                        isDarkPopup
+                          ? "border-white/20 text-white hover:bg-white/5"
+                          : "border-black/20 text-black hover:bg-black/5"
+                      }`}
                     >
                       <ArrowLeft className="h-4 w-4" />
                       {showTrackStep ? "Back" : "Close"}
                     </button>
                   </div>
 
-                  <GlassCard className="mb-6 p-4">
-                    <div className="inline-flex items-center gap-2 rounded-sm px-3 py-1 text-sm font-medium" style={{ backgroundColor: theme.accentBg, color: theme.accent }}>
-                      {selectedTrack === "Software" ? <Layers3 className="h-4 w-4" /> : <Wrench className="h-4 w-4" />}
+                  <div
+                    className={`rounded-md border p-4 mb-6 ${
+                      isDarkPopup ? "bg-white/5 border-white/10" : "bg-black/5 border-black/10"
+                    }`}
+                  >
+                    <div
+                      className={`inline-flex items-center gap-2 rounded-md px-3 py-1 text-xs font-bold uppercase tracking-widest ${
+                        isHardware ? "bg-red-600 text-white" : "bg-[#00f5ff] text-black"
+                      }`}
+                    >
+                      {selectedTrack === "Software" ? (
+                        <Layers3 className="h-4 w-4" />
+                      ) : (
+                        <Wrench className="h-4 w-4" />
+                      )}
                       {selectedTrack} Track
                     </div>
-                  </GlassCard>
+                  </div>
 
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 items-stretch">
                     {currentProblems.map((item) => (
@@ -525,7 +743,8 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
                         item={item}
                         active={selectedProblemStatement === item.title}
                         onSelect={() => chooseProblemStatement(item)}
-                        theme={theme}
+                        isDarkPopup={isDarkPopup}
+                        track={selectedTrack}
                       />
                     ))}
                   </div>
@@ -536,106 +755,223 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
                 <div>
                   <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
                     <div>
-                      <h3 className="text-xl font-semibold text-white">Complete your registration</h3>
-                      <p className="mt-2 text-sm leading-6 text-gray-400">
-                        Your team selection is locked in below. Fill in the remaining details to submit.
-                      </p>
+                      <h3
+                        className={`text-xl font-black uppercase tracking-tight ${
+                          isDarkPopup ? "text-white" : "text-black"
+                        }`}
+                      >
+                        Complete registration
+                      </h3>
                     </div>
                     <button
                       type="button"
                       onClick={() => setStep("problem")}
-                      className="cursor-target inline-flex items-center gap-2 rounded-sm border border-white/8 bg-white/[0.03] px-4 py-2 text-sm text-gray-300 transition hover:border-[rgba(0,245,255,0.2)] hover:text-white"
+                      className={`cursor-target inline-flex items-center gap-2 rounded-md border px-5 py-2 text-xs font-bold uppercase transition-all ${
+                        isDarkPopup
+                          ? "border-white/20 text-white hover:bg-white/5"
+                          : "border-black/20 text-black hover:bg-black/5"
+                      }`}
                     >
                       <ArrowLeft className="h-4 w-4" />
-                      Change problem statement
+                      Change statement
                     </button>
                   </div>
 
                   <div className="mb-6 grid gap-4 md:grid-cols-2">
-                    <SummaryPill label="Selected track" value={selectedTrack} theme={theme} />
-                    <SummaryPill label="Problem statement" value={selectedProblemStatement} theme={theme} />
+                    <SummaryPill
+                      label="Selected track"
+                      value={selectedTrack}
+                      isDarkPopup={isDarkPopup}
+                      track={selectedTrack}
+                    />
+                    <SummaryPill
+                      label="Problem statement"
+                      value={selectedProblemStatement}
+                      isDarkPopup={isDarkPopup}
+                      track={selectedTrack}
+                    />
                   </div>
 
-                  <GlassCard className="p-5 md:p-6">
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    <input type="hidden" {...register("track")} />
-                    <input type="hidden" {...register("problemStatement")} />
-                    <input type="hidden" {...register("problemStatementId")} />
+                  <div
+                    className={`rounded-md border p-6 md:p-8 ${
+                      isDarkPopup
+                        ? "bg-white/5 border-white/10 shadow-inner"
+                        : "bg-black/5 border-black/10 shadow-inner"
+                    }`}
+                  >
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                      <input type="hidden" {...register("track")} />
+                      <input type="hidden" {...register("problemStatement")} />
+                      <input type="hidden" {...register("problemStatementId")} />
 
-                    <div className="grid gap-5 md:grid-cols-2">
-                      <Field label="Full Name" error={errors.name?.message}>
-                        <input
-                          {...register("name")}
-                          className="w-full rounded-sm border border-white/8 bg-white/[0.03] px-4 py-3 text-white outline-none transition focus:border-[var(--neon-cyan)]"
-                          style={{ focusBorderColor: theme.focusBorder }}
-                          placeholder="Enter your full name"
-                        />
-                      </Field>
-                      <Field label="Email" error={errors.email?.message}>
-                        <input
-                          {...register("email")}
-                          type="email"
-                          className="w-full rounded-sm border border-white/8 bg-white/[0.03] px-4 py-3 text-white outline-none transition focus:border-[var(--neon-cyan)]"
-                          placeholder="Enter your email"
-                        />
-                      </Field>
-                    </div>
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <Field
+                          label="Full Name"
+                          error={errors.name?.message}
+                          isDarkPopup={isDarkPopup}
+                        >
+                          <input
+                            {...register("name")}
+                            className={`w-full rounded-md border px-4 py-4 font-medium outline-none transition-all ${
+                              isDarkPopup
+                                ? "border-white/10 bg-black text-white focus:border-white"
+                                : "border-black/10 bg-white text-black focus:border-black"
+                            }`}
+                            placeholder="Enter your full name"
+                          />
+                        </Field>
+                        <Field label="Email" error={errors.email?.message} isDarkPopup={isDarkPopup}>
+                          <input
+                            {...register("email")}
+                            type="email"
+                            className={`w-full rounded-md border px-4 py-4 font-medium outline-none transition-all ${
+                              isDarkPopup
+                                ? "border-white/10 bg-black text-white focus:border-white"
+                                : "border-black/10 bg-white text-black focus:border-black"
+                            }`}
+                            placeholder="Enter your email"
+                          />
+                        </Field>
+                      </div>
 
-                    <div className="grid gap-5 md:grid-cols-2">
-                      <Field label="Phone Number" error={errors.phone?.message}>
-                        <input
-                          {...register("phone")}
-                          type="tel"
-                          className="w-full rounded-sm border border-white/8 bg-white/[0.03] px-4 py-3 text-white outline-none transition focus:border-[var(--neon-cyan)]"
-                          placeholder="Enter phone number"
-                        />
-                      </Field>
-                      <Field label="College Name" error={errors.college?.message}>
-                        <input
-                          {...register("college")}
-                          className="w-full rounded-sm border border-white/8 bg-white/[0.03] px-4 py-3 text-white outline-none transition focus:border-[var(--neon-cyan)]"
-                          placeholder="Enter college name"
-                        />
-                      </Field>
-                    </div>
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <Field
+                          label="Phone Number"
+                          error={errors.phone?.message}
+                          isDarkPopup={isDarkPopup}
+                        >
+                          <input
+                            {...register("phone")}
+                            type="tel"
+                            className={`w-full rounded-md border px-4 py-4 font-medium outline-none transition-all ${
+                              isDarkPopup
+                                ? "border-white/10 bg-black text-white focus:border-white"
+                                : "border-black/10 bg-white text-black focus:border-black"
+                            }`}
+                            placeholder="Enter phone number"
+                          />
+                        </Field>
+                        <Field
+                          label="College Name"
+                          error={errors.college?.message}
+                          isDarkPopup={isDarkPopup}
+                        >
+                          <input
+                            {...register("college")}
+                            className={`w-full rounded-md border px-4 py-4 font-medium outline-none transition-all ${
+                              isDarkPopup
+                                ? "border-white/10 bg-black text-white focus:border-white"
+                                : "border-black/10 bg-white text-black focus:border-black"
+                            }`}
+                            placeholder="Enter college name"
+                          />
+                        </Field>
+                      </div>
 
-                    <div className="grid gap-5 md:grid-cols-[1.6fr_0.8fr]">
-                      <Field label="Team Name" error={errors.teamName?.message}>
+                      <Field
+                        label="Team Name"
+                        error={errors.teamName?.message}
+                        isDarkPopup={isDarkPopup}
+                      >
                         <input
                           {...register("teamName")}
-                          className="w-full rounded-sm border border-white/8 bg-white/[0.03] px-4 py-3 text-white outline-none transition focus:border-[var(--neon-cyan)]"
+                          className={`w-full rounded-md border px-4 py-4 font-medium outline-none transition-all ${
+                            isDarkPopup
+                              ? "border-white/10 bg-black text-white focus:border-white"
+                              : "border-black/10 bg-white text-black focus:border-black"
+                          }`}
                           placeholder="Enter team name"
                         />
                       </Field>
-                      <TeamSizeSelector
-                        value={watch("teamSize") || 1}
-                        onChange={(n) => setValue("teamSize", n, { shouldDirty: true, shouldValidate: true })}
-                        error={errors.teamSize?.message}
-                        theme={theme}
-                      />
-                    </div>
 
-                    {(errors.track || errors.problemStatement) && (
-                      <div className="rounded-sm border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-                        {errors.track?.message || errors.problemStatement?.message}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <label
+                            className={`block text-sm font-bold uppercase tracking-wider ${
+                              isDarkPopup ? "text-white/60" : "text-black/60"
+                            }`}
+                          >
+                            Team Members
+                          </label>
+                          <button
+                            type="button"
+                            onClick={addMember}
+                            disabled={memberCount >= 5}
+                            className={`inline-flex items-center gap-1 rounded-md border px-3 py-1.5 text-xs font-bold uppercase transition-all ${
+                              isDarkPopup
+                                ? "border-white/20 text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                                : "border-black/20 text-black hover:bg-black/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                            }`}
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                            Add Member
+                          </button>
+                        </div>
+
+                        {Array.from({ length: memberCount }).map((_, i) => (
+                          <div key={i} className="relative">
+                            <MemberBlock
+                              index={i}
+                              error={errors.members?.[i]}
+                              theme={theme}
+                              isDarkPopup={isDarkPopup}
+                              register={register}
+                            />
+                            {i >= 2 && (
+                              <button
+                                type="button"
+                                onClick={removeMember}
+                                className={`absolute top-3 right-3 p-1 rounded-md transition-all ${
+                                  isDarkPopup
+                                    ? "text-white/40 hover:text-red-400 hover:bg-white/10"
+                                    : "text-black/40 hover:text-red-600 hover:bg-black/10"
+                                }`}
+                                title="Remove member"
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    )}
 
-                    <div className="flex flex-col gap-3 border-t border-white/6 pt-6 sm:flex-row sm:items-center sm:justify-between">
-                      <button
-                        type="button"
-                        onClick={() => (showTrackStep ? setStep("problem") : onClose())}
-                        className="cursor-target inline-flex items-center justify-center gap-2 rounded-sm border border-white/8 bg-white/[0.03] px-5 py-3 text-sm font-medium text-gray-300 transition hover:border-[rgba(0,245,255,0.2)] hover:text-white"
+                      {(errors.track || errors.problemStatement) && (
+                        <div className="rounded-md border border-red-600 bg-red-600/10 px-4 py-3 text-sm font-bold text-red-600">
+                          {errors.track?.message || errors.problemStatement?.message}
+                        </div>
+                      )}
+
+                      <div
+                        className={`flex flex-col gap-4 border-t pt-8 sm:flex-row sm:items-center sm:justify-between ${
+                          isDarkPopup ? "border-white/10" : "border-black/10"
+                        }`}
                       >
-                        <ArrowLeft className="h-4 w-4" />
-                        {showTrackStep ? "Back" : "Close"}
-                      </button>
-                      <button type="submit" disabled={submitting} className={`${theme.buttonClass} cursor-target text-sm disabled:opacity-50`}>
-                        <span>{submitting ? "Submitting..." : "Submit Registration"}</span>
-                      </button>
-                    </div>
-                  </form>
-                  </GlassCard>
+                        <button
+                          type="button"
+                          onClick={() => (showTrackStep ? setStep("problem") : onClose())}
+                          className={`cursor-target inline-flex items-center justify-center gap-2 rounded-md border px-8 py-4 text-xs font-bold uppercase transition-all ${
+                            isDarkPopup
+                              ? "border-white/20 text-white hover:bg-white/5"
+                              : "border-black/20 text-black hover:bg-black/5"
+                          }`}
+                        >
+                          <ArrowLeft className="h-4 w-4" />
+                          {showTrackStep ? "Back" : "Close"}
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={submitting}
+                          className={`cursor-target rounded-md px-10 py-4 text-xs font-bold uppercase transition-all ${
+                            isHardware
+                              ? "bg-red-600 text-white hover:bg-red-700 shadow-lg shadow-red-600/20"
+                              : "bg-[#00f5ff] text-black hover:bg-cyan-400 shadow-lg shadow-cyan-500/20"
+                          } disabled:opacity-50`}
+                        >
+                          {submitting ? "Submitting..." : "Submit Registration"}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               ) : null}
             </div>

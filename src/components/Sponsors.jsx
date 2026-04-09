@@ -58,7 +58,7 @@ function SponsorCard({ sponsor, index }) {
 
 export default function Sponsors() {
   return (
-    <section id="sponsors" className="relative overflow-hidden py-20 md:py-28">
+    <section id="sponsors" className="relative overflow-hidden py-12 md:py-20">
       <div className="absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 rounded-full bg-white/5 blur-3xl" />
       <div className="absolute left-8 bottom-10 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl" />
       <div className="absolute right-8 top-16 h-56 w-56 rounded-full bg-fuchsia-500/10 blur-3xl" />
@@ -73,7 +73,7 @@ export default function Sponsors() {
         >
 
           <h2 className="mt-4 text-3xl font-bold text-white md:text-5xl">
-            Backed By Our <span className="heading-gradient">Partners</span>
+            Backed By Our <span className="text-[#ff2d55] font-['Exo_2']">Partners</span>
           </h2>
           <p className="muted mx-auto mt-4 max-w-2xl text-lg">
             Add your sponsor logos inside these circular cards to showcase the brands supporting the event.

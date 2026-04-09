@@ -6,13 +6,19 @@ import {
 } from "firebase/auth";
 import { auth } from "../lib/firebase";
 
-const ADMIN_EMAIL = "admin@hacktronix.com";
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || "admin@hacktronix.com";
 
 export function useAuth() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // If Firebase isn't configured, skip auth
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser?.email === ADMIN_EMAIL) {
         setUser({ email: firebaseUser.email, role: "admin", uid: firebaseUser.uid });
@@ -26,6 +32,10 @@ export function useAuth() {
   }, []);
 
   const login = async (email, password) => {
+    if (!auth) {
+      return { success: false, error: "Firebase is not configured. Please add a .env file with your Firebase credentials." };
+    }
+
     try {
       const credential = await signInWithEmailAndPassword(auth, email, password);
 
@@ -49,7 +59,7 @@ export function useAuth() {
   };
 
   const logout = async () => {
-    await signOut(auth);
+    if (auth) await signOut(auth);
   };
 
   return { user, loading, login, logout };

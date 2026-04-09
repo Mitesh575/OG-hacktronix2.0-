@@ -4,6 +4,7 @@ import { useAuth } from "./hooks/useAuth";
 import SmoothScroll from "./components/SmoothScroll";
 import Home from "./pages/Home";
 import Team from "./pages/Team";
+import ProblemStatement from "./pages/ProblemStatement";
 import Guidelines from "./pages/Guidelines";
 import FAQPage from "./pages/FAQPage";
 
@@ -42,8 +43,9 @@ export default function App() {
       >
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/software" element={<SoftwarePage />} />
-          <Route path="/hardware" element={<HardwarePage />} />
+          <Route path="/problem-statement" element={<ProblemStatement />} />
+          {/* <Route path="/software" element={<SoftwarePage />} /> */}
+          {/* <Route path="/hardware" element={<HardwarePage />} /> */}
           <Route path="/team" element={<Team />} />
           <Route path="/guidelines" element={<Guidelines />} />
           <Route path="/faq" element={<FAQPage />} />
