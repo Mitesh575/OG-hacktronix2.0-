@@ -1,7 +1,8 @@
 import { Suspense, lazy } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import SmoothScroll from "./components/SmoothScroll";
+import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Team from "./pages/Team";
 import ProblemStatement from "./pages/ProblemStatement";
@@ -32,6 +33,10 @@ function ProtectedRoute({ children }) {
 }
 
 export default function App() {
+  const { pathname } = useLocation();
+  const showNavbar = !pathname.startsWith("/admin");
+  const isHomePage = pathname === "/";
+
   return (
     <SmoothScroll>
       <Suspense
@@ -41,23 +46,26 @@ export default function App() {
           </div>
         }
       >
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/problem-statement" element={<ProblemStatement />} />
-          {/* <Route path="/software" element={<SoftwarePage />} /> */}
-          {/* <Route path="/hardware" element={<HardwarePage />} /> */}
-          <Route path="/team" element={<Team />} />
-          <Route path="/guidelines" element={<Guidelines />} />
-          <Route path="/faq" element={<FAQPage />} />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+        {showNavbar && <Navbar />}
+        <div className={showNavbar && !isHomePage ? "pt-16 md:pt-20" : ""}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/problem-statement" element={<ProblemStatement />} />
+            {/* <Route path="/software" element={<SoftwarePage />} /> */}
+            {/* <Route path="/hardware" element={<HardwarePage />} /> */}
+            <Route path="/team" element={<Team />} />
+            <Route path="/guidelines" element={<Guidelines />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </div>
       </Suspense>
     </SmoothScroll>
   );

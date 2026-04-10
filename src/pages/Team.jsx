@@ -1,9 +1,7 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import Galaxy from "../components/Galaxy";
 import TargetCursor from "../components/TargetCursor";
 import ProfileCard from "../components/ui/ProfileCard";
-import hackLogo from "../images/hack-logo.png";
 import PrabhuImg from "../images/Prabhu.jpeg";
 import SushmithaImg from "../images/Sushmitha.jpeg";
 import VikashRajImg from "../images/VikashRaj.jpeg";
@@ -24,6 +22,11 @@ import SujayaImg from "../images/Sujaya Pon Gita P.jpeg";
 import MuhilanImg from "../images/Muhilan.jpeg";
 import GayathriImg from "../images/Gayathri.jpeg";
 import SreeLekshmiImg from "../images/Sree Lekshmi J U.jpeg";
+import ElginDaniImg from "../images/Elgin Dani.jpeg";
+import SuyashImg from "../images/Suyash.jpeg";
+import ArundhathiImg from "../images/Arundhathi Ramachandran.jpeg";
+import SushilImg from "../images/Sushil Gopinath.jpeg";
+import PavatharaniImg from "../images/Pavatharani Anandan.jpeg";
 
 const teamSections = [
   {
@@ -43,12 +46,20 @@ const teamSections = [
     ],
   },
   {
+    title: "MTS Society",
+    color: "from-blue-500 to-cyan-400",
+    members: [
+      { name: "Elgin Dani E", role: "Secretary", image: ElginDaniImg, linkedinUrl: "https://www.linkedin.com/in/elgin-dani-11a52027b/" },
+      { name: "Suyash B", role: "Operations Head", image: SuyashImg, linkedinUrl: "https://www.linkedin.com/in/suyashb45/" },
+    ],
+  },
+  {
     title: "Tech Domain",
     color: "from-purple-500 to-pink-400",
     members: [
       { name: "Arun Nehru", role: "Tech Head", image: ArunNehruImg, linkedinUrl: "https://www.linkedin.com/in/arun-nehru-nura14" },
       { name: "DILLI BASKARAN K", role: "Tech Associate", image: DilliImg, linkedinUrl: "https://www.linkedin.com/in/dilli-baskaran-k-1145952a0" },
-      { name: "Mitesh", role: "Tech Associate", image: MiteshKumarImg },
+      { name: "Mitesh Kumaar S", role: "Tech Associate", image: MiteshKumarImg, linkedinUrl: "https://www.linkedin.com/in/mitesh-kumaar-s-25329b378" },
       { name: "Gopika", role: "Tech Associate", image: GopikaImg, linkedinUrl: "https://www.linkedin.com/in/gopika-t-9ab453326/" },
     ],
   },
@@ -85,9 +96,9 @@ const teamSections = [
     title: "Hosting Team",
     color: "from-rose-500 to-pink-400",
     members: [
-      { name: "ARUNDHATHI H", role: "Hosting Head" },
-      { name: "Sushil", role: "Hosting Vice Head" },
-      { name: "Pavatharani A", role: "Hosting Associate" },
+      { name: "ARUNDHATHI H", role: "Hosting Head", image: ArundhathiImg, bgSize: "140%", bgPosition: "center 12%", linkedinUrl: "https://www.linkedin.com/in/arundhathi-ramachandran-6a84b8296/" },
+      { name: "Sushil", role: "Hosting Vice Head", image: SushilImg, linkedinUrl: "https://www.linkedin.com/in/sushil-gopinath-b6248234a/" },
+      { name: "Pavatharani A", role: "Hosting Associate", image: PavatharaniImg, bgSize: "140%", linkedinUrl: "https://www.linkedin.com/in/pavatharani-anandan-9001172b6/" },
       { name: "Gayathri", role: "Hosting Associate", image: GayathriImg, linkedinUrl: "https://www.linkedin.com/in/gayathri-s-692978327" },
       { name: "Ashika S Acharia", role: "Hosting Associate", image: AshikaImg, linkedinUrl: "https://www.linkedin.com/in/ashika-s-acharia-b85073332" },
       { name: "BAVYASREE K", role: "Hosting Associate", image: BavyaImg, linkedinUrl: "https://www.linkedin.com/in/bavyasree-k" },
@@ -143,16 +154,8 @@ export default function TeamPage() {
         <Galaxy mouseInteraction={false} density={0.65} glowIntensity={0.2} saturation={0.08} />
       </div>
 
-      <nav className="fixed left-0 right-0 top-0 z-40 border-b border-white/10 bg-[rgba(10,10,14,0.72)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link to="/" className="cursor-target">
-            <img src={hackLogo} alt="HACKTRONIX" className="h-16 w-auto md:h-20 shrink-0 object-contain" />
-          </Link>
-        </div>
-      </nav>
-
       <div className="relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 pb-20 pt-40 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 pb-20 pt-24 sm:px-6 lg:px-8">
           <motion.div initial="hidden" animate="visible" variants={fadeIn} className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl font-black tracking-tight text-white md:text-7xl" style={{ fontFamily: "'Exo_2', sans-serif" }}>
               Meet the people behind <span className="text-[#ff2d55]">HackTronix</span>

@@ -5,6 +5,7 @@ import hackLogo from "../images/hack-logo.png";
 const quickLinks = [
   { label: "Team", href: "/team", icon: FileText },
   { label: "Guidelines", href: "/guidelines", icon: FileText },
+  { label: "Code of Conduct", href: "https://drive.google.com/file/d/1dtxwRMXkn_2WIFh1QhknYb75QtFtFbOX/view", icon: FileText },
 ];
 
 function InstagramIcon({ className }) {

@@ -1,24 +1,22 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Lightbulb } from "lucide-react";
-import { Link } from "react-router-dom";
 import Galaxy from "../components/Galaxy";
 import TargetCursor from "../components/TargetCursor";
 import GlassCard from "../components/ui/GlassCard";
-import hackLogo from "../images/hack-logo.png";
 
 const problemStatements = [
   {
     id: 1,
-    title: "[Problem Statement Title]",
-    description: "[Add your problem statement description here. Describe the challenge, its relevance, and what participants need to solve.]",
-    tags: ["[Tag 1]", "[Tag 2]", "[Tag 3]"],
+    title: "3D LiDAR-Based Shelter Damage Inspection System",
+    description: "Participants are tasked with designing and implementing a shelter inspection system capable of scanning rectangular shelters using a 3D LiDAR sensor, precisely localising structural damage, and classifying that damage by structural zone - all without human intervention.",
+    link: "https://drive.google.com/file/d/1LwlWeTPbcRv1fw_wZ0SG8I07at4fV2Sj/view",
   },
   {
     id: 2,
-    title: "[Problem Statement Title]",
-    description: "[Add your problem statement description here. Describe the challenge, its relevance, and what participants need to solve.]",
-    tags: ["[Tag 1]", "[Tag 2]", "[Tag 3]"],
+    title: "World Modeling for Autonomous Agents",
+    description: "Most AI agents today work by keeping every observation stuffed into an ever-growing context window. The longer they run, the slower, costlier, and more confused they get. The real problem is the representation. A capable agent does not need to remember every conversation. It needs a structured model of the world it is operating in - updated continuously, queried efficiently, and compact enough to fit inside a small model's context.",
+    link: "https://drive.google.com/file/d/1Zla3J8weI8iNFIuNUz1NoR2KcdTonukL/view",
   },
 ];
 
@@ -34,22 +32,6 @@ export default function ProblemStatementPage() {
       <div className="fixed inset-0 -z-10 opacity-95" style={{ width: "100vw", height: "100vh" }}>
         <Galaxy mouseInteraction={false} density={0.65} glowIntensity={0.2} saturation={0.08} />
       </div>
-
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[rgba(10,10,14,0.72)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link to="/" className="cursor-target">
-              <img src={hackLogo} alt="HACKTRONIX" className="h-16 w-auto md:h-20 shrink-0 object-contain" />
-            </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/team" className="cursor-target inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-gray-300 transition hover:text-white">
-              Team
-            </Link>
-            <Link to="/guidelines" className="cursor-target inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-gray-300 transition hover:text-white">
-              Guidelines
-            </Link>
-          </div>
-        </div>
-      </header>
 
       <main className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
@@ -83,16 +65,12 @@ export default function ProblemStatementPage() {
                     <div className="flex-1">
                       <h2 className="text-xl font-bold text-white mb-3">{ps.title}</h2>
                       <p className="text-gray-300 leading-relaxed mb-4">{ps.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {ps.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-3 py-1 text-xs font-mono tracking-wider text-gray-400 border border-white/10 bg-white/[0.02] rounded-sm"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+                      <a
+                        href={ps.link}
+                        className="inline-flex items-center text-sm font-mono tracking-wide text-cyan-400 hover:text-cyan-300 underline underline-offset-4"
+                      >
+                        click to view the problem statement
+                      </a>
                     </div>
                   </div>
                 </GlassCard>
@@ -100,16 +78,6 @@ export default function ProblemStatementPage() {
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="mt-16 text-center"
-          >
-            <p className="text-gray-500 text-sm">
-              More problem statements coming soon. Check back for updates.
-            </p>
-          </motion.div>
         </div>
       </main>
     </div>

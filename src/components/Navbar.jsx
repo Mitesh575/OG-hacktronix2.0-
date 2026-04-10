@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import hackLogo from "../images/hack-logo.png";
 
 export default function Navbar() {
@@ -31,12 +32,17 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20 gap-3 md:gap-6 relative">
-          <img
-            id="nav-logo-slot"
-            src={hackLogo}
-            alt="HACKTRONIX"
-            className="h-16 w-auto md:h-20 shrink-0 object-contain"
-          />
+          <Link to="/" className="cursor-target flex items-center gap-2 md:gap-3">
+            <img
+              id="nav-logo-slot"
+              src={hackLogo}
+              alt="HACKTRONIX"
+              className="h-16 w-auto md:h-20 shrink-0 object-contain"
+            />
+            <span className="text-white text-xl md:text-3xl font-bold tracking-wider" style={{ fontFamily: "'Star Jedi', sans-serif" }}>
+              HACKTRONIX
+            </span>
+          </Link>
 
           <div className="flex-1 flex items-center justify-end h-full">
             {/* Desktop Links (Right Side) */}
@@ -48,7 +54,7 @@ export default function Navbar() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="cursor-target relative px-4 py-2 text-black hover:text-red-600 transition-all text-[11px] font-bold font-mono tracking-widest uppercase group"
+                  className="cursor-target relative px-4 py-2 text-red-600 hover:text-red-500 transition-all text-[11px] font-bold font-mono tracking-widest uppercase group"
                 >
                   {link.label}
                   <span className="absolute bottom-1 left-4 right-4 h-px bg-red-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
@@ -90,7 +96,7 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block px-4 py-3 text-gray-400 hover:text-[var(--neon-cyan)] hover:bg-white/5 rounded-sm transition-colors font-mono text-xs tracking-wider uppercase"
+                  className="block px-4 py-3 text-red-600 hover:text-red-400 hover:bg-white/5 rounded-sm transition-colors font-mono text-xs tracking-wider uppercase"
                 >
                   {link.label}
                 </a>
