@@ -18,6 +18,7 @@ export default function Navbar() {
     { label: "Team", href: "/team" },
     { label: "Guidelines", href: "/guidelines" },
     { label: "FAQ", href: "/faq" },
+    { label: "External Registration", href: "/external-registration" },
   ];
 
   return (
@@ -36,29 +37,33 @@ export default function Navbar() {
             <img
               id="nav-logo-slot"
               src={hackLogo}
-              alt="HACKTRONIX"
+              alt="HackTronix 2.0"
               className="h-16 w-auto md:h-20 shrink-0 object-contain"
             />
-            <span className="text-white text-xl md:text-3xl font-bold tracking-wider" style={{ fontFamily: "'Star Jedi', sans-serif" }}>
-              HACKTRONIX
+            <span className="text-white text-2xl md:text-4xl font-bold tracking-[0.08em]" style={{ fontFamily: "'Exo 2', sans-serif" }}>
+              HACKTRONIX 2.0
             </span>
           </Link>
 
           <div className="flex-1 flex items-center justify-end h-full">
             {/* Desktop Links (Right Side) */}
-            <div className="hidden md:flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2 md:translate-x-2">
               {navLinks.map((link, idx) => (
-                <motion.a
+                <motion.div
                   key={link.href}
-                  href={link.href}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="cursor-target relative px-4 py-2 text-red-600 hover:text-red-500 transition-all text-[11px] font-bold font-mono tracking-widest uppercase group"
+                  className="group"
                 >
-                  {link.label}
-                  <span className="absolute bottom-1 left-4 right-4 h-px bg-red-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
-                </motion.a>
+                  <Link
+                    to={link.href}
+                    className="cursor-target relative block px-4 py-2 text-red-600 hover:text-red-500 transition-all text-[11px] font-bold font-mono tracking-widest uppercase"
+                  >
+                    {link.label}
+                    <span className="absolute bottom-1 left-4 right-4 h-px bg-red-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -92,14 +97,14 @@ export default function Navbar() {
           >
             <div className="px-4 py-4 space-y-1">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
-                  href={link.href}
+                  to={link.href}
                   onClick={() => setMobileOpen(false)}
                   className="block px-4 py-3 text-red-600 hover:text-red-400 hover:bg-white/5 rounded-sm transition-colors font-mono text-xs tracking-wider uppercase"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
           </motion.div>

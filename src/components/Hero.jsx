@@ -89,19 +89,9 @@ export default function Hero() {
   const mobileTitleRef = useRef(null);
   const desktopLeftRef = useRef(null);
   const desktopRightRef = useRef(null);
+  const disableTitleScrollMotion = true;
 
   useGSAP(() => {
-    gsap.to(containerRef.current, {
-      yPercent: 15,
-      ease: "none",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-
     const slot = document.getElementById("nav-logo-slot");
     if (!slot) return;
 
@@ -110,6 +100,7 @@ export default function Hero() {
     mm.add("(max-width: 767px)", () => {
       const mobileTitle = mobileTitleRef.current;
       if (!mobileTitle) return;
+      if (disableTitleScrollMotion) return;
 
       gsap.set(mobileTitle, { transformOrigin: "left center", zIndex: 80, position: "relative" });
 
@@ -148,6 +139,7 @@ export default function Hero() {
       const desktopLeft = desktopLeftRef.current;
       const desktopRight = desktopRightRef.current;
       if (!desktopLeft || !desktopRight) return;
+      if (disableTitleScrollMotion) return;
 
       gsap.set([desktopLeft, desktopRight], {
         transformOrigin: "left center",
@@ -304,7 +296,7 @@ export default function Hero() {
           </motion.div>
 
           <h1 ref={mobileTitleRef} className="text-4xl sm:text-5xl font-extrabold text-white mb-6 tracking-wider crt-flicker" style={{ fontFamily: "'Star Jedi', sans-serif" }}>
-            HACKTRONIX <span className="text-[var(--neon-cyan)]">2.0</span>
+            HackTronix <span className="text-[var(--neon-cyan)]">2.0</span>
           </h1>
 
           <p className="text-base text-gray-400 mb-10 max-w-sm mx-auto leading-relaxed">
@@ -346,7 +338,7 @@ export default function Hero() {
               className="flex flex-col items-end"
             >
               <h1 ref={desktopLeftRef} className="text-8xl text-white tracking-[0.1em] mb-4" style={{ fontFamily: "'Star Jedi', sans-serif" }}>
-                HACKTR
+                HackTr
               </h1>
               <p className="text-xl text-white/80 mb-10 max-w-md font-medium">
                 A 24-hour hackathon exploring the

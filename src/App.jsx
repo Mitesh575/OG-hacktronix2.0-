@@ -8,6 +8,7 @@ import Team from "./pages/Team";
 import ProblemStatement from "./pages/ProblemStatement";
 import Guidelines from "./pages/Guidelines";
 import FAQPage from "./pages/FAQPage";
+import ExternalRegistration from "./pages/ExternalRegistration";
 
 const SoftwarePage = lazy(() => import("./pages/SoftwarePage"));
 const HardwarePage = lazy(() => import("./pages/HardwarePage"));
@@ -56,6 +57,7 @@ export default function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/guidelines" element={<Guidelines />} />
             <Route path="/faq" element={<FAQPage />} />
+            <Route path="/external-registration" element={<ExternalRegistration />} />
             <Route
               path="/admin"
               element={

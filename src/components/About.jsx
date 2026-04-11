@@ -16,8 +16,8 @@ export default function About() {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-8 text-center" style={{ letterSpacing: "2px" }}>
-            About <span className="text-[#ff2d55] font-['Exo_2']">HACKTRONIX</span>
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 text-center" style={{ letterSpacing: "2px" }}>
+            ABOUT <span className="text-[#ff2d55] font-['Exo_2']">HACKTRONIX</span>
           </h2>
 
           <GlassCard className="p-6 md:p-8" style={{ borderColor: 'rgba(239, 68, 68, 0.2)' }}>
@@ -31,7 +31,7 @@ export default function About() {
                 </div>
                 <div>
                   <p className="text-xs text-blue-300/70 uppercase tracking-wider font-mono">Date</p>
-                  <p className="text-white font-medium">Coming Soon</p>
+                  <p className="text-white font-medium">29th-30th April</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -49,7 +49,7 @@ export default function About() {
                 </div>
                 <div>
                   <p className="text-xs text-orange-300/70 uppercase tracking-wider font-mono">Location</p>
-                  <p className="text-white font-medium">TBA</p>
+                  <p className="text-white font-medium">Apple Hall - SEC</p>
                 </div>
               </div>
             </div>

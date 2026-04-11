@@ -27,6 +27,7 @@ import SuyashImg from "../images/Suyash.jpeg";
 import ArundhathiImg from "../images/Arundhathi Ramachandran.jpeg";
 import SushilImg from "../images/Sushil Gopinath.jpeg";
 import PavatharaniImg from "../images/Pavatharani Anandan.jpeg";
+import ShawrouPrasathImg from "../images/SHAWROU PRASATH V.png";
 
 const teamSections = [
   {
@@ -70,7 +71,7 @@ const teamSections = [
       { name: "Sree Lekshmi J U", role: "Design Head", image: SreeLekshmiImg, nameSize: "16px", bgSize: "140%", bgPosition: "center center", linkedinUrl: "https://www.linkedin.com/in/sree-lekshmi-j-u-4b3678296/" },
       { name: "Dharshini S", role: "Design Vice Head", image: DharshiniImg, linkedinUrl: "https://www.linkedin.com/in/dharshini-s-624ab932a" },
       { name: "D Sai Tejaswini", role: "Design Associate", image: DSaiTejaswiniImg, linkedinUrl: "https://www.linkedin.com/in/darapureddy-sai-tejaswini-569303402" },
-      { name: "SHAWROU PRASATH V", role: "Design Associate", nameSize: "15px" },
+      { name: "SHAWROU PRASATH V", role: "Design Associate", image: ShawrouPrasathImg, nameSize: "15px", linkedinUrl: "https://www.linkedin.com/in/shawrou-prasath-v-45a18b328/" },
     ],
   },
   {

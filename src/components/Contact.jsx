@@ -3,8 +3,8 @@ import { MapPin, Phone, Mail, User } from "lucide-react";
 import GlassCard from "./ui/GlassCard";
 
 const contactPeople = [
-  { name: "Prabhu", phone: "+91 97911 85402", email: "[Email]" },
-  { name: "Sushmithaa", phone: "+91 9042840326", email: "[Email]" },
+  { name: "Prabhu", phone: "+91 9791185402", email: "prabhu.officialworks@gmail.com " },
+  { name: "Sushmithaa", phone: "+91 9042840326", email: "sushmithaabalamurugan@gmail.com" },
 ];
 
 

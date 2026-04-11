@@ -63,9 +63,9 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link to="/" className="cursor-target flex items-center gap-3 mb-4 group">
-              <img src={hackLogo} alt="HACKTRONIX" className="h-10 w-auto md:h-12 object-contain shrink-0" />
+              <img src={hackLogo} alt="HackTronix 2.0" className="h-10 w-auto md:h-12 object-contain shrink-0" />
               <span className="text-xl font-bold text-white font-mono tracking-wider" style={{ fontFamily: "'Star Jedi', sans-serif" }}>
-                HACK<span className="text-[var(--neon-cyan)]">TRONIX</span>
+                Hack<span className="text-[var(--neon-cyan)]">Tronix 2.0</span>
               </span>
             </Link>
             <p className="muted text-sm leading-relaxed">

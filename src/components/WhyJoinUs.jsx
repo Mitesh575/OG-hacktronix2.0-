@@ -24,9 +24,9 @@ const features = [
 ];
 
 const stats = [
-  { value: "200+", label: "Participants", icon: Users, gradient: "from-primary to-secondary" },
+  { value: "100+", label: "Participants", icon: Users, gradient: "from-primary to-secondary" },
   { value: "₹30,000", label: "Prize Pool", icon: Award, gradient: "from-green-500 to-emerald-400" },
-  { value: "5", label: "Domains", icon: Layers, gradient: "from-blue-500 to-cyan-400" },
+  { value: "2", label: "Domains", icon: Layers, gradient: "from-blue-500 to-cyan-400" },
   { value: "24", label: "Hours", icon: Clock, gradient: "from-purple-500 to-pink-400" },
 ];
 
