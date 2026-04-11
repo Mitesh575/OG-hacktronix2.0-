@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 
 const DEFAULT_INNER_GRADIENT = 'linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)';
 
@@ -36,11 +36,12 @@ const ProfileCardComponent = ({
   mobileTiltSensitivity = 5,
   bgSize = 'cover',
   bgPosition = 'center',
-  nameSize = '18px',
+  nameSize = '17px',
   linkedinUrl = '#'
 }) => {
   const wrapRef = useRef(null);
   const shellRef = useRef(null);
+  const [resolvedNameSize, setResolvedNameSize] = useState(nameSize);
 
   const enterTimerRef = useRef(null);
   const leaveRafRef = useRef(null);
@@ -294,6 +295,31 @@ const ProfileCardComponent = ({
 
   const cardRadius = '20px';
 
+  useEffect(() => {
+    const maxNameWidth = 170;
+    const baseSize = Number.parseFloat(String(nameSize)) || 18;
+    const minSize = 8;
+    const globalSizeReduction = 1;
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) {
+      setResolvedNameSize(`${Math.max(minSize, baseSize - globalSizeReduction)}px`);
+      return;
+    }
+
+    const label = String(name || '').toUpperCase();
+    let fittedSize = baseSize;
+
+    while (fittedSize > minSize) {
+      context.font = `700 ${fittedSize}px Exo 2, sans-serif`;
+      if (context.measureText(label).width <= maxNameWidth) break;
+      fittedSize -= 0.5;
+    }
+
+    setResolvedNameSize(`${Math.max(minSize, fittedSize - globalSizeReduction)}px`);
+  }, [name, nameSize]);
+
   const hasImage = !!avatarUrl;
 
   const cardStyle = useMemo(
@@ -432,60 +458,64 @@ const ProfileCardComponent = ({
             />
 
             <div
-              className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-6"
+              className="absolute bottom-0 left-0 right-0"
               style={{
                 transform: 'translateZ(2px)',
                 gridArea: '1 / -1',
-                padding: '20px'
+                padding: '16px'
               }}
             >
-              {hasImage ? null : (
-                <div
-                  className="w-20 h-20 rounded-full overflow-hidden border-2 border-white/20 mb-3 flex-shrink-0"
-                  style={{ background: 'rgba(255,255,255,0.1)' }}
-                >
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-cyan-500/30 to-pink-500/30">
-                    <span className="text-2xl font-bold text-white/70">
-                      {name.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                </div>
-              )}
-              
-              <h3
-                className="font-semibold text-center whitespace-nowrap overflow-hidden text-ellipsis w-full px-1 uppercase"
-                style={{
-                  fontSize: nameSize,
-                  fontWeight: '700',
-                  color: '#fff',
-                  textShadow: '0 2px 8px rgba(0,0,0,0.8)',
-                  marginBottom: '4px'
-                }}
-              >
-                {name}
-              </h3>
-              <p
-                className="font-medium whitespace-nowrap text-center"
-                style={{
-                  fontSize: '13px',
-                  color: hasImage ? '#00f5ff' : 'rgba(255,255,255,0.7)',
-                  textShadow: hasImage ? '0 1px 4px rgba(0,0,0,0.8)' : 'none'
-                }}
-              >
-                {title}
-              </p>
+              <div className="flex items-end justify-between gap-3">
+                <div className="min-w-0">
+                  {hasImage ? null : (
+                    <div
+                      className="w-20 h-20 rounded-full overflow-hidden border-2 border-white/20 mb-3 flex-shrink-0"
+                      style={{ background: 'rgba(255,255,255,0.1)' }}
+                    >
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-cyan-500/30 to-pink-500/30">
+                        <span className="text-2xl font-bold text-white/70">
+                          {name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+                  )}
 
-              <div className="mt-3 pointer-events-auto flex justify-center">
-                <a 
-                  href={linkedinUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="p-1.5 rounded-full bg-white/10 hover:bg-[rgba(0,245,255,0.2)] transition-all duration-300 text-white/80 hover:text-[#00f5ff] backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.5)] border border-white/10"
-                  onClick={(e) => e.stopPropagation()}
-                  title="View Profile"
-                >
-                  <LinkedinIcon className="w-4 h-4" />
-                </a>
+                  <h3
+                    className="font-semibold text-left whitespace-nowrap overflow-hidden uppercase"
+                    style={{
+                      fontSize: resolvedNameSize,
+                      fontWeight: '700',
+                      color: '#fff',
+                      textShadow: '0 2px 8px rgba(0,0,0,0.8)',
+                      marginBottom: '4px'
+                    }}
+                  >
+                    {name}
+                  </h3>
+                  <p
+                    className="font-medium whitespace-nowrap text-left"
+                    style={{
+                      fontSize: '13px',
+                      color: hasImage ? '#00f5ff' : 'rgba(255,255,255,0.7)',
+                      textShadow: hasImage ? '0 1px 4px rgba(0,0,0,0.8)' : 'none'
+                    }}
+                  >
+                    {title}
+                  </p>
+                </div>
+
+                <div className="pointer-events-auto flex justify-center mb-1 shrink-0">
+                  <a
+                    href={linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-full bg-white/10 hover:bg-[rgba(0,245,255,0.2)] transition-all duration-300 text-white/80 hover:text-[#00f5ff] backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.5)] border border-white/10"
+                    onClick={(e) => e.stopPropagation()}
+                    title="View Profile"
+                  >
+                    <LinkedinIcon className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
             </div>
           </div>

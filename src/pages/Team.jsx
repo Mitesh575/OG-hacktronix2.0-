@@ -50,8 +50,8 @@ const teamSections = [
     title: "MTS Society",
     color: "from-blue-500 to-cyan-400",
     members: [
-      { name: "Elgin Dani E", role: "Secretary", image: ElginDaniImg, linkedinUrl: "https://www.linkedin.com/in/elgin-dani-11a52027b/" },
-      { name: "Suyash B", role: "Operations Head", image: SuyashImg, linkedinUrl: "https://www.linkedin.com/in/suyashb45/" },
+      { name: "Elgin Dani E", role: "Chairperson", image: ElginDaniImg, linkedinUrl: "https://www.linkedin.com/in/elgin-dani-11a52027b/" },
+      { name: "Suyash B", role: "Vice Chairperson", image: SuyashImg, linkedinUrl: "https://www.linkedin.com/in/suyashb45/" },
     ],
   },
   {
@@ -89,7 +89,7 @@ const teamSections = [
     color: "from-cyan-500 to-blue-400",
     members: [
       { name: "Muhilan", role: "Media Head", image: MuhilanImg, bgSize: "150%", bgPosition: "center center" },
-      { name: "Timothy", role: "Media Associate", image: TimothyKelvinImg, linkedinUrl: "https://www.linkedin.com/in/timothy-kelvin-m-17b264284" },
+      { name: "Timothy Kelvin M", role: "Media Associate", image: TimothyKelvinImg, linkedinUrl: "https://www.linkedin.com/in/timothy-kelvin-m-17b264284" },
       { name: "SHAMKUMAR V", role: "Media Associate", image: ShamKumaarImg, linkedinUrl: "https://www.linkedin.com/in/sham-kumar-0a135a340" },
     ],
   },
