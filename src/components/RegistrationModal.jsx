@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { collection, addDoc, serverTimestamp, query, where, getDocs, runTransaction, doc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { ArrowLeft, Check, ChevronRight, ChevronDown, Bot, Terminal, Zap, Orbit, Plus, X, Upload, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Check, ChevronRight, ChevronDown, Bot, Terminal, Zap, Orbit, Plus, X, Upload, AlertTriangle, ShieldOff } from "lucide-react";
 import { db, storage } from "../lib/firebase";
 import { sendConfirmationEmail } from "../lib/emailjs";
 import GlassCard from "./ui/GlassCard";
@@ -394,7 +394,7 @@ function MemberBlock({ index, error, theme, isDarkPopup, register }) {
   );
 }
 
-export default function RegistrationModal({ isOpen, onClose, initialTrack = null }) {
+export default function RegistrationModal({ isOpen, onClose, initialTrack = null, closed = false }) {
   const [submitting, setSubmitting] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("Submitting...");
   const [success, setSuccess] = useState(false);
@@ -631,7 +631,57 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
     <AnimatePresence>
       {isOpen ? (
         <ModalShell onClose={onClose} isDarkPopup={isDarkPopup}>
-          {success ? (
+          {closed ? (
+            <div className="p-10 md:p-16 text-center text-white">
+              {/* Pulsing glow ring */}
+              <div className="relative mx-auto mb-8 flex h-24 w-24 items-center justify-center">
+                <div className="absolute inset-0 rounded-full bg-[var(--sw-red)] opacity-10 animate-ping" style={{ animationDuration: '3s' }} />
+                <div className="absolute inset-0 rounded-full border border-[var(--sw-red)] opacity-30" />
+                <div
+                  className="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-[var(--sw-red)] shadow-[0_0_25px_rgba(255,45,85,0.3),inset_0_0_15px_rgba(255,45,85,0.15)]"
+                >
+                  <ShieldOff className="h-9 w-9 text-[var(--sw-red)] drop-shadow-[0_0_10px_rgba(255,45,85,0.6)]" />
+                </div>
+              </div>
+
+              {/* Title */}
+              <h3
+                className="mb-3 text-3xl md:text-4xl font-black uppercase tracking-[0.08em] text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                style={{ fontFamily: "'Exo 2', sans-serif" }}
+              >
+                Registrations{" "}
+                <span className="text-[var(--sw-red)] drop-shadow-[0_0_15px_rgba(255,45,85,0.5)]">Closed</span>
+              </h3>
+
+              {/* Decorative line */}
+              <div className="mx-auto mb-6 h-[2px] w-32 bg-gradient-to-r from-transparent via-[var(--sw-red)] to-transparent opacity-50" />
+
+              {/* Description */}
+              <p className="mx-auto mb-8 max-w-md text-base leading-7 text-gray-400 font-mono">
+                The registration window for <span className="text-white font-bold">HACKTRONIX 2.0</span> has ended.
+                Thank you for your interest — stay tuned for updates!
+              </p>
+
+              {/* Info card */}
+              <div className="mx-auto max-w-sm mb-8 p-5 border border-[var(--sw-holo-bright)] rounded-md bg-[rgba(0,245,255,0.04)] text-left shadow-[0_0_20px_rgba(0,245,255,0.08)]">
+                <h4 className="text-sm font-bold text-[var(--neon-cyan)] mb-2 flex items-center gap-2 tracking-wider uppercase font-mono">
+                  <Zap className="w-4 h-4" />
+                  Stay Connected
+                </h4>
+                <p className="text-sm text-gray-400 leading-relaxed">
+                  Follow our socials and join the WhatsApp group for announcements on results, future events, and more.
+                </p>
+              </div>
+
+              {/* Close button */}
+              <button
+                onClick={onClose}
+                className="btn-sw-primary cursor-target text-sm"
+              >
+                <span>Close Window</span>
+              </button>
+            </div>
+          ) : success ? (
             <div className={`p-8 md:p-10 text-center ${isDarkPopup ? "text-white" : "text-black"}`}>
               <div
                 className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-md text-green-400"

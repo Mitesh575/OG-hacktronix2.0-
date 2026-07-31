@@ -386,6 +386,7 @@ const problemStatements = [
 /* ── Components ── */
 export default function InternalRegistration() {
   const [showScrollHint, setShowScrollHint] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
   const loadDelay = location.state?.fromSingularity || location.state?.fromWhiteHole ? 1.8 : 0;
 
@@ -507,7 +508,7 @@ export default function InternalRegistration() {
           </motion.div>
 
           {/* CTA Button */}
-          <RegisterButton loadDelay={loadDelay} onClick={() => window.open('https://forms.gle/BeM11evVkda1sm5N8', '_blank')} />
+          <RegisterButton loadDelay={loadDelay} onClick={() => setIsModalOpen(true)} />
 
           {/* Fee Notice */}
           <motion.div
@@ -747,7 +748,7 @@ export default function InternalRegistration() {
               Grab your spot in HACKTRONIX 2.0. Fill out the form and get ready to build.
             </p>
 
-            <RegisterButton onClick={() => window.open('https://forms.gle/BeM11evVkda1sm5N8', '_blank')} />
+            <RegisterButton onClick={() => setIsModalOpen(true)} />
 
             {/* Footer note */}
             <motion.p
@@ -763,6 +764,8 @@ export default function InternalRegistration() {
         </div>
       </section>
 
+
+      <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} closed={true} />
     </div>
   );
 }

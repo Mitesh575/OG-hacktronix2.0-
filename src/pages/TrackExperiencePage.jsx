@@ -266,7 +266,7 @@ export default function TrackExperiencePage({ track }) {
         </section>
       </main>
 
-      <RegistrationModal isOpen={modalOpen} onClose={() => setModalOpen(false)} initialTrack={track} />
+      <RegistrationModal isOpen={modalOpen} onClose={() => setModalOpen(false)} initialTrack={track} closed={true} />
     </div>
   );
 }

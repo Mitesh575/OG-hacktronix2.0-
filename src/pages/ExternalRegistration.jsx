@@ -749,7 +749,7 @@ export default function ExternalRegistration() {
         </div>
       </section>
 
-      <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} closed={true} />
     </div>
   );
 }
