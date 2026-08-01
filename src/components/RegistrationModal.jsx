@@ -394,7 +394,7 @@ function MemberBlock({ index, error, theme, isDarkPopup, register }) {
   );
 }
 
-export default function RegistrationModal({ isOpen, onClose, initialTrack = null, closed = false }) {
+export default function RegistrationModal({ isOpen, onClose, initialTrack = null, closed = true }) {
   const [submitting, setSubmitting] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("Submitting...");
   const [success, setSuccess] = useState(false);
@@ -504,6 +504,11 @@ export default function RegistrationModal({ isOpen, onClose, initialTrack = null
   const [duplicateError, setDuplicateError] = useState("");
 
   const onSubmit = async (data) => {
+    if (closed) {
+      setDuplicateError("Registrations for HACKTRONIX 2.0 are now closed.");
+      return;
+    }
+
     setSubmitting(true);
     setLoadingMessage("Checking email...");
     setDuplicateError("");
