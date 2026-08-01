@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Replace 'admin@hacktronix.com' with your actual VITE_ADMIN_EMAIL value.
+    function isAdmin() {
+      return request.auth != null &&
+        request.auth.token.email == 'admin@hacktronix.com';
+    }
+
+    match /registrations/{registrationId} {
+      // Registration is CLOSED. Deny all new creates (UI, bots, direct API).
+      allow create: if false;
+      // Only the admin can read and manage existing registrations.
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+  }
+}
