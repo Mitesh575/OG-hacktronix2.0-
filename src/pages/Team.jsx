@@ -23,7 +23,7 @@ import MuhilanImg from "../images/Muhilan.jpeg";
 import GayathriImg from "../images/Gayathri.jpeg";
 import SreeLekshmiImg from "../images/Sree Lekshmi J U.jpeg";
 import ElginDaniImg from "../images/Elgin Dani.jpeg";
-import SuyashImg from "../images/Suyash.jpeg";
+import SuyashImg from "../images/Tejas K.jpeg";
 import ArundhathiImg from "../images/Arundhathi Ramachandran.jpeg";
 import SushilImg from "../images/Sushil Gopinath.jpeg";
 import PavatharaniImg from "../images/Pavatharani Anandan.jpeg";
@@ -51,7 +51,7 @@ const teamSections = [
     color: "from-blue-500 to-cyan-400",
     members: [
       { name: "Elgin Dani E", role: "Chairperson", image: ElginDaniImg, linkedinUrl: "https://www.linkedin.com/in/elgin-dani-11a52027b/" },
-      { name: "Suyash B", role: "Vice Chairperson", image: SuyashImg, linkedinUrl: "https://www.linkedin.com/in/suyashb45/" },
+      { name: "Tejas K", role: "Vice Chairperson", image: SuyashImg, linkedinUrl: "https://www.linkedin.com/in/suyashb45/" },
     ],
   },
   {
